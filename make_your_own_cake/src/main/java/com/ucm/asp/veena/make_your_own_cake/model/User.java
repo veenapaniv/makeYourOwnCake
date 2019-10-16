@@ -8,7 +8,14 @@ public class User {
 	  private String lastName;
 	  private String phone;
 	  private String address;
+	  private String role;
 
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public String getUserName() {
 			return userName;
 	}

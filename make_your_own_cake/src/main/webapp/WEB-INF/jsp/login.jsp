@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <!DOCTYPE html>
 <html>
    <head>
@@ -8,12 +8,11 @@
       <title>Make Your Own Cake</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="css/dashboard.css" />
-      <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
-      <link rel="stylesheet" href="css/bootstrap.min.css" />
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
       <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
       <link rel="stylesheet" href="css/login.css">
+      <link rel="stylesheet" href="css/dashboard.css">
       <script src="js/login.js"></script>
       <script src="js/signup.js"></script>
    </head>
@@ -28,8 +27,8 @@
       <div class="container login-form">
          <div class="panel panel-default">
             <div class="panel-body">
-               <div class="logo-div" align="center"><img src="images/logo.jpg" class="img-rounded" id="logo" alt="SellerManagement"></div>
-               <p >
+               <div class="logo-div" align="center"><img src="images/logo.jpg" class="img-rounded" id="logo" alt="Make your own cake"></div>
+               <p>
 				  
                </p>
                <form action="/login" method="POST">

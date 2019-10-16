@@ -15,7 +15,7 @@ public class LoginServiceImpl implements LoginService {
 	LoginDao loginDao;
 
 	@Override
-	public boolean validateCredentials(String email, String password) {
+	public String validateCredentials(String email, String password) {
 		return loginDao.validateCredentials(email, password);
 	}
 

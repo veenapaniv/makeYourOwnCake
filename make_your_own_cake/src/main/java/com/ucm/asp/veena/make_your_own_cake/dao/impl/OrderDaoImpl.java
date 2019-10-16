@@ -11,16 +11,19 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.ucm.asp.veena.make_your_own_cake.dao.OrderDao;
 import com.ucm.asp.veena.make_your_own_cake.model.Cake;
 import com.ucm.asp.veena.make_your_own_cake.model.Order;
 
+@Repository
 public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	@Autowired
 	DataSource dataSource;
@@ -66,11 +69,11 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		for(Map<String, Object> row:rows) {
 			Order orders = new Order();
 			orders.setCakeId((String)row.get("CID"));
-			orders.setCakeName((String)row.get("CAKENAME"));
+			orders.setCakeName((String)row.get("CNAME"));
 			orders.setQty((int)row.get("QTY"));
 			orders.setUsername((String)row.get("USERNAME"));
 			orders.setShippingAddress((String) row.get("S_ADDRESS"));
-			orders.setMessage((String) row.get("MESSAGE"));
+			orders.setMessage((String) row.get("MSG"));
 			
 			orderList.add(orders);
 			
@@ -88,8 +91,9 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	}
 	
 	public void insertOrder(Order order) {
+
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertInventory = "INSERT INTO orders values (?, ?, ?, ?, ?, ?)";
+			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
 			String getOrderCountSql = "select * from Orders";
 			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getOrderCountSql);
@@ -100,15 +104,14 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			statement.setInt(1, orderId);
 			statement.setString(2,order.getCakeName());
 			statement.setInt(3, order.getQty());
-			statement.setString(4,"veenapani");
+			statement.setString(4,order.getUsername());
 			statement.setString(5,order.getShippingAddress());
 			statement.setString(6, "");
-			statement.setInt(8, 1);
 			statement.setString(7, order.getMessage());
-			statement.setString(9, getCakeID(order.getCakeName()));
-			statement.setDouble(10, order.getAmount());
-			
-			
+			statement.setInt(8, 1);
+			statement.setString(9, order.getUserId());
+			statement.setFloat(10, order.getAmount());
+			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
         }  
@@ -126,7 +129,6 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
             statement.setString(5, order.getMessage());
             statement.setFloat(6, order.getAmount());
             statement.executeUpdate();
-          
 		}catch (SQLException ex) {
             ex.printStackTrace();
         }  

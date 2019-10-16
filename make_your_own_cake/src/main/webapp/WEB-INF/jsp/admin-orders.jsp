@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Make Your Order</title>
+<title>Make Your Order-admin</title>
 </head>
 <body>
 

@@ -33,7 +33,7 @@ public class LoginDaoImpl  extends JdbcDaoSupport implements LoginDao {
 	 * This method makes a call to the internal validatePassword method
 	 */
 	@Override
-	public boolean validateCredentials(String email, String password) {
+	public String validateCredentials(String email, String password) {
 		return validatePassword(email,password);
 		
 	}
@@ -41,7 +41,7 @@ public class LoginDaoImpl  extends JdbcDaoSupport implements LoginDao {
 	 * This method validates if the password entered matches the user's password in the database
 	 */
 	@Override
-	public boolean validatePassword(String email,String password) {
+	public String validatePassword(String email,String password) {
 		String sql = "SELECT * FROM users WHERE email = ?";
 		User currentUser = new User();
 		try {
@@ -52,21 +52,24 @@ public class LoginDaoImpl  extends JdbcDaoSupport implements LoginDao {
 				user.setUserId(rs.getString("uid"));
 				user.setUsername(rs.getString("email"));
 				user.setPassword(rs.getString("password"));
+				user.setRole(rs.getString("role"));
 				return user;
 			}
 		});
 		}
 		catch(EmptyResultDataAccessException e) {
 			e.printStackTrace();
-			return false;
+			return "false";
 		}
 		if(currentUser.getPassword().equals(password))
 		{
-			return true;
+			if(currentUser.getRole().equalsIgnoreCase("user"))
+			return "user";
+			else if(currentUser.getRole().equalsIgnoreCase("admin"))
+				return "admin";
 		}
-		else {
-			return false;
-		}
+		
+		return "invalid";
 		
 	}
 	/**
