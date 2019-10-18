@@ -74,13 +74,39 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			orders.setUsername((String)row.get("USERNAME"));
 			orders.setShippingAddress((String) row.get("S_ADDRESS"));
 			orders.setMessage((String) row.get("MSG"));
-			
+			orders.setOrder_status((String)row.get("ORDER_STATUS"));
 			orderList.add(orders);
 			
 		}
 		
 		return orderList;
 	}
+	
+	
+	@Override
+	public List<Order> getNewOrders() {
+		String getCakesQuery = "SELECT * FROM Orders where ORDER_STATUS = \'NEW\'";
+		
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
+		List<Order> orderList = new ArrayList<Order>();
+		
+		for(Map<String, Object> row:rows) {
+			Order orders = new Order();
+			orders.setCakeId((String)row.get("CID"));
+			orders.setCakeName((String)row.get("CNAME"));
+			orders.setQty((int)row.get("QTY"));
+			orders.setUsername((String)row.get("USERNAME"));
+			orders.setShippingAddress((String) row.get("S_ADDRESS"));
+			orders.setMessage((String) row.get("MSG"));
+			orders.setOrder_status((String)row.get("ORDER_STATUS"));
+			orderList.add(orders);
+			
+		}
+		
+		return orderList;
+	}
+
+	
 
 	@Override
 	public String getCakeID(String cakeName) {
@@ -93,7 +119,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	public void insertOrder(Order order) {
 
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?)";
+			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
 			String getOrderCountSql = "select * from Orders";
 			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getOrderCountSql);
@@ -111,6 +137,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			statement.setInt(8, 1);
 			statement.setString(9, order.getUserId());
 			statement.setFloat(10, order.getAmount());
+			statement.setString(11, order.getOrder_status());
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();

@@ -67,6 +67,8 @@
 			                     <th scope="col">Message</th>
 			                     <th scope="col">Username</th>
 			                     <th scope="col">Amount</th>
+			                     <th scope="col">Edit</th>
+			                     <th scope="col">Delete</th>
 			                  </tr>
 			               </thead>
 			               <tbody id="top_products">
@@ -79,6 +81,12 @@
 						               		<td class="prodAmt row"><c:out value="${orders.message}"/></td>
 						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
 						               		<td class="prodAmt row"><c:out value="${orders.amount}"/></td>
+						               		<td>
+						                        <c:url var="editUrl" value="/editInventory" />
+						                        <a href="${editUrl}?id=${orders.orderId}">Edit</a>
+						                        <c:url var="deleteUrl" value="/deleteInventory" />
+						                        <a href="${deleteUrl}?id=${orders.orderId}">Delete</a>
+						                    </td>
 				               			</tr>
 			               			</c:forEach>
 			               </tbody>
@@ -89,6 +97,8 @@
 			      </div>	
            	
            </form>
+           
+           
            
 
 </body>

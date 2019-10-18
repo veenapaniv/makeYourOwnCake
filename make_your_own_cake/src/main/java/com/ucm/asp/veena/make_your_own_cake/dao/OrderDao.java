@@ -11,4 +11,5 @@ public interface OrderDao {
 	public String getCakeID(String cakeName);
 	public List<Order> getAllOrders();
 	public void insertOrder(Order order);
+	public List<Order> getNewOrders();
 }

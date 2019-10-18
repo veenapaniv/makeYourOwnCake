@@ -8,6 +8,6 @@
 </head>
 <body>
 
-<a href="/order">View your orders!</a>
+<a href="/admin-orders">View your orders!</a>
 </body>
 </html>

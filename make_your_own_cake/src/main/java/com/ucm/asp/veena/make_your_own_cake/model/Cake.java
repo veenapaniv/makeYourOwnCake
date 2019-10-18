@@ -1,21 +1,20 @@
 package com.ucm.asp.veena.make_your_own_cake.model;
 
+import java.sql.Blob;
+
 public class Cake {
 	  private String cakeId;
-	  //private String userName;
 	  private String cakeName;
 	  private int stock;
 	  private double amount;
 	  private String type;
-	  private String image;
-	public String getImage() {
+	  private Blob image;
+
+	public Blob getImage() {
 		return image;
 	}
-	public void setImage(String image) {
+	public void setImage(Blob image) {
 		this.image = image;
-	}
-	public String getCakeId() {
-		return cakeId;
 	}
 	public void setCakeId(String cakeId) {
 		this.cakeId = cakeId;

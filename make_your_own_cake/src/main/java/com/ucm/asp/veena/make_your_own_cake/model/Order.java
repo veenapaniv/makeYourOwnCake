@@ -17,7 +17,14 @@ public class Order {
 	private String image;
 	private String message;
 	private String cakeId;
+	private String order_status;
 	
+	public String getOrder_status() {
+		return order_status;
+	}
+	public void setOrder_status(String order_status) {
+		this.order_status = order_status;
+	}
 	public int getOrderId() {
 		return orderId;
 	}

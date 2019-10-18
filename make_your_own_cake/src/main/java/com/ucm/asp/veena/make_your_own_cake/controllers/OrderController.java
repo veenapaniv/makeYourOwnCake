@@ -56,6 +56,7 @@ public class OrderController {
 		order.setUserId(userId);
 		order.setMessage(message);
 		order.setAmount(amount);
+		order.setOrder_status("NEW");
 		
 		orderService.insertOrder(order);
 		
