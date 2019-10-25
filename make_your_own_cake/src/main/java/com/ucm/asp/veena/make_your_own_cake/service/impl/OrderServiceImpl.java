@@ -40,6 +40,11 @@ public class OrderServiceImpl implements OrderService {
 		
 	}
 	
+	public Order getOrderById(String id) {
+		return orderDao.getOrderById(id);
+	}
 	
-	
+	public void updateOrder(Order order) {
+		 orderDao.updateOrder(order);
+	}
 }

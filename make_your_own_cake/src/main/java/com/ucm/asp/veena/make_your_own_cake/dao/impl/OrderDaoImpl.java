@@ -2,9 +2,12 @@ package com.ucm.asp.veena.make_your_own_cake.dao.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +19,14 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import com.ucm.asp.veena.make_your_own_cake.dao.OrderDao;
 import com.ucm.asp.veena.make_your_own_cake.model.Cake;
 import com.ucm.asp.veena.make_your_own_cake.model.Order;
+import com.ucm.asp.veena.make_your_own_cake.model.User;
 
 @Repository
 public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
@@ -49,13 +54,10 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			cakes.setCakeId((String)row.get("CID"));
 			cakes.setCakeName((String)row.get("CAKENAME"));
 			cakes.setStock((int)row.get("STOCK"));
-			cakes.setAmount((double)row.get("AMOUNT"));
+			cakes.setAmount((float)row.get("AMOUNT"));
 			cakes.setType((String) row.get("TYPE"));
-			
 			cakeList.add(cakes);
-			
 		}
-		
 		return cakeList;
 	}
 	
@@ -68,6 +70,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		
 		for(Map<String, Object> row:rows) {
 			Order orders = new Order();
+			orders.setOrderId((String)row.get("OID"));
 			orders.setCakeId((String)row.get("CID"));
 			orders.setCakeName((String)row.get("CNAME"));
 			orders.setQty((int)row.get("QTY"));
@@ -75,6 +78,8 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			orders.setShippingAddress((String) row.get("S_ADDRESS"));
 			orders.setMessage((String) row.get("MSG"));
 			orders.setOrder_status((String)row.get("ORDER_STATUS"));
+			orders.setAmount((float)row.get("amount"));
+			orders.setUserId((String)row.get("UID"));
 			orderList.add(orders);
 			
 		}
@@ -82,6 +87,31 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		return orderList;
 	}
 	
+	/**
+	 * Returns a user object by ID
+	 */
+	@Override
+	public Order getOrderById(String id) {
+		String getCakesQuery = "SELECT * FROM Orders WHERE oid = "+id;
+		
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
+		Order order = new Order();
+		
+		for(Map<String, Object> row:rows) {
+				order.setOrderId(id);
+				order.setCakeName((String)row.get("CNAME"));
+				order.setQty((int)row.get("QTY"));
+				order.setUsername((String)row.get("username"));
+				order.setShippingAddress((String)row.get("s_address"));
+				order.setMessage((String)row.get("msg"));
+				order.setUserId((String)row.get("uid"));
+				order.setCakeId((String)row.get("cid"));
+				order.setAmount((float)row.get("amount"));
+				
+			}
+		return order;
+		
+	}
 	
 	@Override
 	public List<Order> getNewOrders() {
@@ -144,10 +174,11 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
         }  
 	}
 	
+	@Override
 	public void updateOrder(Order order) {
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String updateInventory = "update inventory " +
-					"set cname = ?, qty = ?, s_address = ?, image = ?, msg =?, amount = ? where ProductId = "+order.getCakeId();
+			String updateInventory = "update orders " +
+					"set cname = ?, qty = ?, username = ?, s_address = ?, msg =?, amount = ? where OID = "+order.getOrderId();
 			PreparedStatement statement = connection.prepareStatement(updateInventory);
             statement.setString(1, order.getCakeName());
             statement.setInt(2, order.getQty());
@@ -159,6 +190,15 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		}catch (SQLException ex) {
             ex.printStackTrace();
         }  
+	}
+
+	@Override
+	public Blob getPhotoById(int id) {
+		String query = "select image from cake where cid=?";
+
+		Blob photo = getJdbcTemplate().queryForObject(query, new Object[] { id }, Blob.class);
+
+		return photo;
 	}
 	
 

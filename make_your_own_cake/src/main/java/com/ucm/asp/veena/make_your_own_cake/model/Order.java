@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Order {
 	
-	private int orderId;
+	private String orderId;
 	private String cakeName;
 	private int qty;
 	private String username;
@@ -25,10 +25,10 @@ public class Order {
 	public void setOrder_status(String order_status) {
 		this.order_status = order_status;
 	}
-	public int getOrderId() {
+	public String getOrderId() {
 		return orderId;
 	}
-	public void setOrderId(int orderId) {
+	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 	public String getCakeName() {

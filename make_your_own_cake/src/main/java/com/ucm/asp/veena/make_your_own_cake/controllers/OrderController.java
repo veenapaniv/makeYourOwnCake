@@ -1,20 +1,29 @@
 package com.ucm.asp.veena.make_your_own_cake.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.ucm.asp.veena.make_your_own_cake.dao.OrderDao;
 import com.ucm.asp.veena.make_your_own_cake.model.Cake;
 import com.ucm.asp.veena.make_your_own_cake.model.Order;
 import com.ucm.asp.veena.make_your_own_cake.service.OrderService;
@@ -24,16 +33,23 @@ public class OrderController {
 	@Autowired
 	OrderService orderService;
 	
+	@Autowired
+	OrderDao orderDao;
+	
 	Order order;
 	
-	@RequestMapping(value="getAllProducts",method=RequestMethod.GET)
-	@ResponseBody
-	public String getAllCakes() {
-			
-		//return dashboardService.getTrendingProductsThisMonth().toString();
-		return null;
+	
+	@RequestMapping(value = "/getCakePhoto/{id}", method=RequestMethod.GET)
+	public void getCakePhoto(HttpServletResponse response, @PathVariable("id") int id) throws Exception {
+		response.setContentType("image/jpeg");
+
+		Blob ph = orderDao.getPhotoById(id);
 		
+		byte[] bytes = ph.getBytes(1, (int) ph.length());
+		InputStream inputStream = new ByteArrayInputStream(bytes);
+		IOUtils.copy(inputStream, response.getOutputStream());
 	}
+	
 	@RequestMapping(value="addProduct",method=RequestMethod.POST)
 	@ResponseBody
 	public void insertCake(HttpServletRequest request,@RequestParam String username,@RequestParam String cakeName,@RequestParam int quantity, @RequestParam String shipping_address, @RequestParam String message,
@@ -57,7 +73,6 @@ public class OrderController {
 		order.setMessage(message);
 		order.setAmount(amount);
 		order.setOrder_status("NEW");
-		
 		orderService.insertOrder(order);
 		
 	}
@@ -72,15 +87,41 @@ public class OrderController {
 	@ModelAttribute
 	@RequestMapping(method = RequestMethod.GET)
 	public String productsData(HttpServletRequest request,@ModelAttribute("products") Order order,ModelMap model) {
-		
+		System.out.println("orders get");
 		List<Order> orders = orderService.getAllOrders();
-		
+		List<Cake> cakeList = orderService.getAllCakes();
+		model.addAttribute("cakes",cakeList);
 		model.addAttribute("orders", orders);
-		
-		
 		
 		return "order";
 		
 	}
+	
+	//Prepopulating details of product to edit
+		@RequestMapping(value="/editInventory", method=  RequestMethod.GET)
+		public ModelAndView editInventory(@RequestParam("id") String id) {
+			//List<Order> ordersList = new ArrayList<Order>();
+			Order myOrder = orderService.getOrderById(id);
+			//ordersList.add(myOrder);
+			ModelAndView model = new ModelAndView("edit_order");
+			model.addObject("order",myOrder);
+			return model;
+		}
+		
+		//Updating a product in database
+		@RequestMapping(value = "/editInventory", method = RequestMethod.POST)
+		public String editInventory(HttpServletRequest request,@RequestParam String id, @RequestParam String username,@RequestParam String cakeName,@RequestParam int quantity, @RequestParam String shipping_address, @RequestParam String message,
+				@RequestParam float amount) {
+			Order order = new Order();
+			order.setUsername(username);
+			order.setCakeName(cakeName);
+			order.setQty(quantity);
+			order.setShippingAddress(shipping_address);
+			order.setMessage(message);
+			order.setAmount(amount);
+			order.setOrder_status("NEW");
+			orderService.updateOrder(order);
+			return "redirect:/order";
+		}
 
 }

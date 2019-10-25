@@ -10,9 +10,12 @@
 <title>Make Your Order-admin</title>
 </head>
 <body>
-
-	 	
-	 		<form action="/addCake" method="POST">
+	 		<form action="/addCake" method="POST" enctype="multipart/form-data">
+	 		
+	 		<div class="form-group">
+                     <label for="cakeImage">cake picture:</label>
+                      <input type="file" required class="form-control" id="cakeImage" placeholder="Select image" name="photo" size="50">
+                  </div>
                   <div class="form-group">
                      <label for="cakeName">cakeName:</label>
                       <input type="text" required class="form-control" id="cakeName" placeholder="Enter cake name" name="cakeName">

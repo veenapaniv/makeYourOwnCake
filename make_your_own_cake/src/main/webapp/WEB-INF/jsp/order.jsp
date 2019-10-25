@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>  
 <%@page session="false"%> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@page isELIgnored="false"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,13 +19,9 @@
                   </div>
                   <div class="form-group">
                      <label for="cakeName">Select the CakeName:</label>
-                     <select id="cakeName" required name="cakeName" path="cakeName">
-					    <option>Chocolate Cake</option>					 
-					    <option>Red Velvet Cake</option>
-					    <option>Pineapple Cake</option>
-					    <option>Orange Cake</option>
-					</select>
-					
+					<c:forEach var="cakes" items="${cakes}">
+						<input TYPE="radio" name="command" value="0"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
+					</c:forEach>
 					
                   </div>
                   <div class="form-group">

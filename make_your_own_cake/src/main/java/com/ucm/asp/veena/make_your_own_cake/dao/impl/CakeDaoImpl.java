@@ -1,9 +1,11 @@
 package com.ucm.asp.veena.make_your_own_cake.dao.impl;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,12 +28,35 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 	
 	@Value("${spring.datasource.url}")
 	String databaseURL;
-    String user = "root";
-    String password = "Sriram@1";
+	
+	@Value("${spring.datasource.username}")
+    String user;
+	
+	@Value("${spring.datasource.password}")
+    String password;
     
     @PostConstruct
 	private void initialize(){
 		setDataSource(dataSource);
+	}
+    
+	@Override
+	public List<Cake> getAllCakes() {
+		String getCakesQuery = "SELECT * FROM Cake";
+		
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
+		List<Cake> cakeList = new ArrayList<Cake>();
+		
+		for(Map<String, Object> row:rows) {
+			Cake cakes = new Cake();
+			cakes.setCakeId((String)row.get("CID"));
+			cakes.setCakeName((String)row.get("CAKENAME"));
+			cakes.setStock((int)row.get("STOCK"));
+			cakes.setAmount((double)row.get("AMOUNT"));
+			cakes.setType((String) row.get("TYPE"));
+			cakeList.add(cakes);
+		}
+		return cakeList;
 	}
     
     public void insertCake(Cake cake) {
@@ -39,14 +64,20 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
 			String insertCake = "INSERT INTO cake values (?,?, ?, ?, ?, ?)";
 			PreparedStatement statement = connection.prepareStatement(insertCake);
-			String getCakeCountSql = "select * from Orders";
+			String getCakeCountSql = "select * from Cake";
 			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getCakeCountSql);
 			
 			//orderId will be 1 more than the count of orders in the system
 			int cakeId = number_of_orders.size()+1;
 			//int userId = 
 			statement.setInt(1, cakeId);
-			statement.setString(2,null);
+			
+			InputStream imageStream = cake.getImageStream();
+			if (imageStream != null) {
+				// fetches input stream of the upload file for the blob column
+				statement.setBlob(2, imageStream);
+			}
+			
 			statement.setString(3, cake.getCakeName());
 			statement.setInt(4,cake.getStock());
 			statement.setDouble(5,cake.getAmount());

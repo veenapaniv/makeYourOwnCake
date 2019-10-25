@@ -11,4 +11,6 @@ public interface OrderService {
 	public String getCakeID(String cakeName);
 	public List<Order> getAllOrders();
 	public void insertOrder(Order order);
+	public Order getOrderById(String id);
+	public void updateOrder(Order order);
 }
