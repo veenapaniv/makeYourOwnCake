@@ -47,4 +47,21 @@ public class OrderServiceImpl implements OrderService {
 	public void updateOrder(Order order) {
 		 orderDao.updateOrder(order);
 	}
+	@Override
+	public void deleteOrder(String productId) {
+		orderDao.deleteOrder(productId);
+		
+	}
+
+	@Override
+	public List<Order> getPopularCakes() {
+		
+		return orderDao.getPopularCakes();
+	}
+
+	@Override
+	public List<Order> getPopularCustomers() {
+		
+		return orderDao.getPopularUsers();
+	}
 }

@@ -149,25 +149,24 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	public void insertOrder(Order order) {
 
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?,?)";
+			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
 			String getOrderCountSql = "select * from Orders";
 			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getOrderCountSql);
 			
 			//orderId will be 1 more than the count of orders in the system
 			int orderId = number_of_orders.size()+1;
-			//int userId = 
 			statement.setInt(1, orderId);
 			statement.setString(2,order.getCakeName());
 			statement.setInt(3, order.getQty());
 			statement.setString(4,order.getUsername());
 			statement.setString(5,order.getShippingAddress());
-			statement.setString(6, "");
-			statement.setString(7, order.getMessage());
-			statement.setInt(8, 1);
-			statement.setString(9, order.getUserId());
-			statement.setFloat(10, order.getAmount());
-			statement.setString(11, order.getOrder_status());
+			statement.setString(6, order.getMessage());
+			System.out.println("userID is"+order.getUserId());
+			statement.setString(7, order.getUserId());
+			statement.setString(8, order.getCakeId());
+			statement.setFloat(9, order.getAmount());
+			statement.setString(10, order.getOrder_status());
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
@@ -182,8 +181,8 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			PreparedStatement statement = connection.prepareStatement(updateInventory);
             statement.setString(1, order.getCakeName());
             statement.setInt(2, order.getQty());
-            statement.setString(3, order.getShippingAddress());
-            statement.setString(4, "");
+            statement.setString(3, order.getUsername());
+            statement.setString(4, order.getShippingAddress());
             statement.setString(5, order.getMessage());
             statement.setFloat(6, order.getAmount());
             statement.executeUpdate();
@@ -201,5 +200,46 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		return photo;
 	}
 	
-
+	@Override
+	public void deleteOrder(String id) {
+		String deleteProduct = "delete from Orders where oid = ?";
+		getJdbcTemplate().update(deleteProduct, new Object[]{
+				id
+		});
+		
+	}
+	
+	@Override
+	public List<Order> getPopularCakes() {
+		String popularCakes = "SELECT cname, cid, count(cid) as orderedQty \n" + 
+				"FROM Orders GROUP BY cid,cname order by orderedQty desc"  ;
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(popularCakes);
+		List<Order> orderList = new ArrayList<Order>();
+		
+		for(Map<String, Object> row:rows) {
+			Order order = new Order();
+			order.setCakeId((String)row.get("cid"));
+			order.setCakeName((String)row.get("cname"));
+			orderList.add(order);
+		}
+		return orderList;
+	}
+	
+	@Override
+	public List<Order> getPopularUsers() {
+		String popularUsers = "select username, count(username) from orders\n" + 
+				"group by username\n" + 
+				"having count(username) > 1\n" + 
+				"order by username;";
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(popularUsers);
+		List<Order> orderList = new ArrayList<Order>();
+		Order order = new Order();
+		for(Map<String, Object> row:rows) {
+			order.setCakeId((String)row.get("cid"));
+			order.setCakeName((String)row.get("cname"));
+			order.setUsername((String)row.get("username"));
+			orderList.add(order);
+		}
+		return orderList;
+	}
 }

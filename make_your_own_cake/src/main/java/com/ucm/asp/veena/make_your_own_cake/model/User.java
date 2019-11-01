@@ -1,5 +1,7 @@
 package com.ucm.asp.veena.make_your_own_cake.model;
 
+import java.util.Date;
+
 public class User {
 	  private String userId;
 	  private String userName;
@@ -9,7 +11,14 @@ public class User {
 	  private String phone;
 	  private String address;
 	  private String role;
+	  private Date dob;
 
+	public Date getDob() {
+		return dob;
+	}
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
 	public String getRole() {
 		return role;
 	}

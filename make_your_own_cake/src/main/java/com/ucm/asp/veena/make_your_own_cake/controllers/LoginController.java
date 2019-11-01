@@ -42,16 +42,27 @@ public class LoginController {
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public String handleLogin(@RequestParam String email,@RequestParam String pwd,HttpServletResponse response) {
-	
+		
 		//validate the credentials and display error message if the user credentials are wrong	
 		if(service.validateCredentials(email, pwd).contains("invalid")) {
 			String errorMsg = "Invalid Credentials";
 			return "login";
 		}
 		else if(service.validateCredentials(email, pwd).contains("user"))
+		{
+			CookieUtil userCookie = new CookieUtil("userId",userService.getUserByEmail(email).getUserId());
+			CookieUtil usernameCookie = new CookieUtil("username",userService.getUserByEmail(email).getUserId());
+			response.addCookie(userCookie);
+			response.addCookie(usernameCookie);
 			return "dashboard";
-		else if(service.validateCredentials(email, pwd).contains("admin"))
+		}
+		else if(service.validateCredentials(email, pwd).contains("admin")) {
+			CookieUtil userCookie = new CookieUtil("userId",userService.getUserByEmail(email).getUserId());
+			CookieUtil usernameCookie = new CookieUtil("username",userService.getUserByEmail(email).getUserId());
+			response.addCookie(userCookie);
+			response.addCookie(usernameCookie);
 			return "admin-dashboard";
+		}
 		
 		CookieUtil userCookie = new CookieUtil("userId",userService.getUserByEmail(email).getUserId());
 		CookieUtil usernameCookie = new CookieUtil("username",userService.getUserByEmail(email).getUserId());

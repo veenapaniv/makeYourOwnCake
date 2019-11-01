@@ -37,6 +37,7 @@ public class OrderController {
 	OrderDao orderDao;
 	
 	Order order;
+	private String deleteId;
 	
 	
 	@RequestMapping(value = "/getCakePhoto/{id}", method=RequestMethod.GET)
@@ -58,7 +59,7 @@ public class OrderController {
 		Cookie[] cookies = request.getCookies();
 		if(cookies != null) {
 			for(Cookie c : cookies) {
-				if(c.getName().equals("userId")) {
+				if(c.getName().equals("userCookie")) {
 					userId = c.getValue();					
 				}
 				
@@ -69,7 +70,7 @@ public class OrderController {
 		order.setCakeName(cakeName);
 		order.setQty(quantity);
 		order.setShippingAddress(shipping_address);
-		order.setUserId(userId);
+		order.setUserId("1");
 		order.setMessage(message);
 		order.setAmount(amount);
 		order.setOrder_status("NEW");
@@ -90,8 +91,13 @@ public class OrderController {
 		System.out.println("orders get");
 		List<Order> orders = orderService.getAllOrders();
 		List<Cake> cakeList = orderService.getAllCakes();
+		List<Order> popularUsers = orderService.getPopularCustomers();
+		List<Order> popularCakes = orderService.getPopularCakes();
 		model.addAttribute("cakes",cakeList);
 		model.addAttribute("orders", orders);
+		model.addAttribute("popularUsers",popularUsers);
+		model.addAttribute("popularCakes", popularCakes);
+		
 		
 		return "order";
 		
@@ -105,6 +111,8 @@ public class OrderController {
 			//ordersList.add(myOrder);
 			ModelAndView model = new ModelAndView("edit_order");
 			model.addObject("order",myOrder);
+			List<Cake> cakeList = orderService.getAllCakes();
+			model.addObject("cakes",cakeList);
 			return model;
 		}
 		
@@ -119,8 +127,24 @@ public class OrderController {
 			order.setShippingAddress(shipping_address);
 			order.setMessage(message);
 			order.setAmount(amount);
+			order.setOrderId(id);
 			order.setOrder_status("NEW");
 			orderService.updateOrder(order);
+			return "redirect:/order";
+		}
+		
+		//View for delete product
+		@RequestMapping("/deleteOrder")
+		public ModelAndView deleteOrder(@RequestParam("id") String id) {
+			deleteId = id;
+			ModelAndView model = new ModelAndView("delete_order");
+			return model;
+		}
+		
+		//Deleting a product in database
+		@RequestMapping(value="/deleteOrder", method = RequestMethod.POST)
+		public String deleteOrder() {
+			orderService.deleteOrder(deleteId);
 			return "redirect:/order";
 		}
 

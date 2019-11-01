@@ -9,21 +9,26 @@
 <head>
 <meta charset="UTF-8">
 <title>Make Your Order</title>
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+      <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
 	 		<form action="/addProduct" method="POST">
                   <div class="form-group">
                      <label for="username">Username:</label>
-                      <input type="text" required class="form-control" id="username" placeholder="Enter your name" name="username">
+                      <input type="text" required class="form-control" id="username" placeholder="Enter your name" name="username" value="${cakeId}">
                   </div>
-                  <div class="form-group">
+                    <div class="form-group">
                      <label for="cakeName">Select the CakeName:</label>
+                     <%-- <input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>"> --%>
 					<c:forEach var="cakes" items="${cakes}">
-						<input TYPE="radio" name="command" value="0"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
+						<input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
 					</c:forEach>
 					
-                  </div>
+                  </div>  
                   <div class="form-group">
                      <label for="quantity">Stock:</label>
                      <input type="text" required class="form-control" id="quantity" placeholder="Enter the quantity" name="quantity">
@@ -40,7 +45,7 @@
                      <label for="address">Address:</label>
                      <input type="text" required class="form-control" id="address" placeholder="Enter the shipping address" name="shipping_address">
                   </div>
-                   <div class="form-group">
+                  <div class="form-group">
                      <label for="message">Message:</label>
                      <input type="text" required class="form-control" id="message" placeholder="Enter the message" name="message">
                   </div>
@@ -81,22 +86,64 @@
 						               		<td>
 						                        <c:url var="editUrl" value="/editInventory" />
 						                        <a href="${editUrl}?id=${orders.orderId}">Edit</a>
-						                        <c:url var="deleteUrl" value="/deleteInventory" />
-						                        <a href="${deleteUrl}?id=${orders.orderId}">Delete</a>
+						                        <c:url var="deleteUrl" value="/deleteOrder" />
+						                        <a href="${deleteUrl}?id=${orders.orderId}"><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Delete</button></a>
 						                    </td>
 				               			</tr>
 			               			</c:forEach>
+			               			<%-- <c:forEach var="popularUsers" items="${popularUsers}">
+				               			<tr>
+						               		<td class="productName"><c:out value="${orders.cakeName}"/></td>
+						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
+						               		<td class="prodAmt row"><c:out value="${orders.cid}"/></td>
+				               			</tr>
+			               			</c:forEach> --%>
+			               			
 			               </tbody>
 			            </table>
+			            
+			            <h2>Popular cakes</h2>
+			             <table class="table table-striped" id="trending_products">
+			               <thead>
+			                  <tr>
+			                     <th scope="col">Cake Name</th>
+			                     <th scope="col">CID</th>
+			                  </tr>
+			               </thead>
+			               <tbody id="top_products">
+			               			<c:forEach var="popularCakes" items="${popularCakes}">
+			               			
+				               			<tr>
+						               		<td class="productName"><c:out value="${popularCakes.cakeName}"/></td>
+						               		 <td class="prodAmt row"><c:out value="${popularCakes.cakeId}"/></td> 
+				               			</tr>
+			               			</c:forEach>
+			               	</tbody>
+			               	</table>		
 			           
+			            <h2>Popular users</h2>
+			             <table class="table table-striped" id="trending_products">
+			               <thead>
+			                  <tr>
+			                     <th scope="col">userName</th>
+			                  </tr>
+			               </thead>
+			               <tbody id="top_products">
+			               		<c:out value="${fn:length(popularUsers)}"></c:out>
+			               			<c:forEach var="popularUsers" items="${popularUsers}">
+			               			
+				               			<tr>
+						               		<td class="prodAmt row"><c:out value="${popularUsers.username}"/></td>
+				               			</tr>
+			               			</c:forEach>
+			               	</tbody>
+			               	</table>		
 			         </div>
 			         <hr />
 			      </div>	
-           	
-           </form>
+  </form>
            
-           
-           
-
+                
+      
 </body>
 </html>

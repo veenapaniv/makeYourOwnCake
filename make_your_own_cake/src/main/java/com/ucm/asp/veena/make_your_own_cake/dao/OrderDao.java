@@ -17,4 +17,7 @@ public interface OrderDao {
 	public List<Order> getNewOrders();
 	public Blob getPhotoById(int id);
 	public Order getOrderById(String id);
-}
+	public void deleteOrder(String id);
+	public List<Order> getPopularCakes();
+	public List<Order> getPopularUsers();
+;}

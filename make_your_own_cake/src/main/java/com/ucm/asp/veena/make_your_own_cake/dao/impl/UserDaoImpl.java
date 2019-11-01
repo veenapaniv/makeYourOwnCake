@@ -71,13 +71,15 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	 */
 	@Override
 	public User getUserByName(String userName) {
-		String sql = "SELECT * FROM users WHERE userName = ?";
+		String sql = "SELECT * FROM users WHERE Name = ?";
 		return (User)getJdbcTemplate().queryForObject(sql, new Object[]{userName}, new RowMapper<User>(){
 			@Override
 			public User mapRow(ResultSet rs, int rwNumber) throws SQLException {
 				User user = new User();
-				user.setUserId(rs.getString("userId"));
-				user.setUsername(rs.getString("username"));
+				user.setUserId(rs.getString("uid"));
+				user.setUsername(rs.getString("name"));
+				user.setAddress(rs.getString("address"));
+				user.setRole(rs.getString("role"));
 				return user;
 			}
 		});
@@ -89,13 +91,15 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	 */
 	@Override
 	public User getUserByEmail(String email) {
-		String sql = "SELECT * FROM user WHERE username = ?";
+		String sql = "SELECT * FROM users WHERE Email = ?";
 		return (User)getJdbcTemplate().queryForObject(sql, new Object[]{email}, new RowMapper<User>(){
 			@Override
 			public User mapRow(ResultSet rs, int rwNumber) throws SQLException {
 				User user = new User();
-				user.setUserId(rs.getString("userId"));
-				user.setUsername(rs.getString("username"));
+				user.setUserId(rs.getString("uid"));
+				user.setUsername(rs.getString("name"));
+				user.setAddress(rs.getString("address"));
+				user.setRole(rs.getString("role"));
 				return user;
 			}
 		});

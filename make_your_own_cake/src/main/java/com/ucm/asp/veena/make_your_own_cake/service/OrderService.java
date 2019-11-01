@@ -13,4 +13,7 @@ public interface OrderService {
 	public void insertOrder(Order order);
 	public Order getOrderById(String id);
 	public void updateOrder(Order order);
+	public void deleteOrder(String id);
+	public List<Order> getPopularCakes();
+	public List<Order> getPopularCustomers();
 }

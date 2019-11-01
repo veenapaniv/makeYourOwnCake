@@ -23,11 +23,13 @@
                   </div>
                   <div class="form-group">
                      <label for="cakeName">Select the CakeName:</label>
+                     <%-- <input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>"> --%>
 					<c:forEach var="cakes" items="${cakes}">
-						<input TYPE="radio" name="cakeName" value="1"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
+					<c:out value="0"/>test
+					<c:out value="${cakes.cakeName }"/>
+						<input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
 					</c:forEach>
-					
-                  </div>
+                  </div>  
                   <div class="form-group">
                      <label for="quantity">Stock:</label>
                      <input type="text" required class="form-control" id="quantity" placeholder="quantity" name="quantity" value="${order.qty}">
