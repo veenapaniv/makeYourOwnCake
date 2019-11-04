@@ -88,7 +88,6 @@ public class OrderController {
 	@ModelAttribute
 	@RequestMapping(method = RequestMethod.GET)
 	public String productsData(HttpServletRequest request,@ModelAttribute("products") Order order,ModelMap model) {
-		System.out.println("orders get");
 		List<Order> orders = orderService.getAllOrders();
 		List<Cake> cakeList = orderService.getAllCakes();
 		List<Order> popularUsers = orderService.getPopularCustomers();

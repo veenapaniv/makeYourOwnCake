@@ -11,23 +11,20 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
       <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-      <link rel="stylesheet" href="css/login.css">
+      <link rel="stylesheet" href="/make_your_own_cake/src/main/resources/static/css/login.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="css/dashboard.css">
       <script src="js/login.js"></script>
       <script src="js/signup.js"></script>
    </head>
    <body>
-      <div class="seller-header">
-         <div class="seller-container">
-            <nav class="seller-nav">
-               <span class="seller-heading">Make Your Own Cake</span>
-            </nav>
-         </div>
+ <div class="jumbotron text-center">
+               <i class="fa fa-birthday-cake" style="font-size:48px;"></i><h1>Make Your Own Cake</h1>
       </div>
       <div class="container login-form">
          <div class="panel panel-default">
             <div class="panel-body">
-               <div class="logo-div" align="center"><img src="images/logo.jpg" class="img-rounded" id="logo" alt="Make your own cake"></div>
+              <!-- <div class="logo-div" align="center"><img src="/images/logo.jpg" class="img-rounded" id="logo" alt="Make your own cake"></div> -->
                <p>
 				  
                </p>

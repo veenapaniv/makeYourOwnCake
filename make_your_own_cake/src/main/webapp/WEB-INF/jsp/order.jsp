@@ -15,8 +15,32 @@
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
+ <div class="jumbotron text-center">
+               <i class="fa fa-birthday-cake" style="font-size:48px;"></i><h1>Make Your Own Cake</h1>
+      </div>
+      
+      <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">Make Your Own Cake</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/order">Place Order</a></li>
+        <li><a href="/orders">View Orders</a></li>
+<!--         <li><a href="/popular">Top Purchases</a></li>
+         <li><a href="/purchases">Top Purchaser</a></li> -->
+      </ul>
+    </div>
+  </div>
+</nav>
 
-	 		<form action="/addProduct" method="POST">
+	 		<form action="/addProduct" class="modal-content animate" style="padding-left:150px; padding-right:150px; padding-top:100px; padding-bottom:100px" method="POST">
                   <div class="form-group">
                      <label for="username">Username:</label>
                       <input type="text" required class="form-control" id="username" placeholder="Enter your name" name="username" value="${cakeId}">
@@ -52,98 +76,6 @@
                   <div class="col-md-12 text-center"> 
                      <button id="place-order" name="place-order" class="btn btn-primary">Order</button> 
                   </div>
-           </form>
-           
-           
-           <form action="/getAllProducts">
-           	    <div class="col col-md-12 seller-stock">
-			            
-			         <div class="col-sm-6 border-left seller-height">
-			            <h2>All Orders</h2>
-			            	 <table class="table table-striped" id="trending_products">
-			               <thead>
-			                  <tr>
-			                     <th scope="col">Cake Name</th>
-			                     <th scope="col">Quantity</th>
-			                     <th scope="col">Shipping Address</th>
-			                     <th scope="col">Message</th>
-			                     <th scope="col">Username</th>
-			                     <th scope="col">Amount</th>
-			                     <th scope="col">Edit</th>
-			                     <th scope="col">Delete</th>
-			                  </tr>
-			               </thead>
-			               <tbody id="top_products">
-			               		
-			               			<c:forEach var="orders" items="${orders}">
-				               			<tr>
-						               		<td class="productName"><c:out value="${orders.cakeName}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.qty}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.shippingAddress}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.message}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.amount}"/></td>
-						               		<td>
-						                        <c:url var="editUrl" value="/editInventory" />
-						                        <a href="${editUrl}?id=${orders.orderId}">Edit</a>
-						                        <c:url var="deleteUrl" value="/deleteOrder" />
-						                        <a href="${deleteUrl}?id=${orders.orderId}"><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Delete</button></a>
-						                    </td>
-				               			</tr>
-			               			</c:forEach>
-			               			<%-- <c:forEach var="popularUsers" items="${popularUsers}">
-				               			<tr>
-						               		<td class="productName"><c:out value="${orders.cakeName}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.cid}"/></td>
-				               			</tr>
-			               			</c:forEach> --%>
-			               			
-			               </tbody>
-			            </table>
-			            
-			            <h2>Popular cakes</h2>
-			             <table class="table table-striped" id="trending_products">
-			               <thead>
-			                  <tr>
-			                     <th scope="col">Cake Name</th>
-			                     <th scope="col">CID</th>
-			                  </tr>
-			               </thead>
-			               <tbody id="top_products">
-			               			<c:forEach var="popularCakes" items="${popularCakes}">
-			               			
-				               			<tr>
-						               		<td class="productName"><c:out value="${popularCakes.cakeName}"/></td>
-						               		 <td class="prodAmt row"><c:out value="${popularCakes.cakeId}"/></td> 
-				               			</tr>
-			               			</c:forEach>
-			               	</tbody>
-			               	</table>		
-			           
-			            <h2>Popular users</h2>
-			             <table class="table table-striped" id="trending_products">
-			               <thead>
-			                  <tr>
-			                     <th scope="col">userName</th>
-			                  </tr>
-			               </thead>
-			               <tbody id="top_products">
-			               		<c:out value="${fn:length(popularUsers)}"></c:out>
-			               			<c:forEach var="popularUsers" items="${popularUsers}">
-			               			
-				               			<tr>
-						               		<td class="prodAmt row"><c:out value="${popularUsers.username}"/></td>
-				               			</tr>
-			               			</c:forEach>
-			               	</tbody>
-			               	</table>		
-			         </div>
-			         <hr />
-			      </div>	
-  </form>
-           
-                
-      
+           </form> 
 </body>
 </html>
