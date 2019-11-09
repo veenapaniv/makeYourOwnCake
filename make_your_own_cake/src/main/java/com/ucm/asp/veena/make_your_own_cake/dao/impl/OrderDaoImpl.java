@@ -151,8 +151,9 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
 			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
-			String getOrderCountSql = "select * from Orders";
-			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getOrderCountSql);
+			String getOrderCountSql = "select max(oid) from Orders";
+			int number_of_orders= getJdbcTemplate().queryForObject(
+					getOrderCountSql, new Object[]{}, int.class);
 			
 			String cakeNameQuery = "select cakename from Cake where cid = ?";
 			String cakeName = getJdbcTemplate().queryForObject(cakeNameQuery, new Object[] { order.getCakeId() }, String.class);
@@ -161,7 +162,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			int imgId = getJdbcTemplate().queryForObject(query, new Object[] { order.getCakeId() }, int.class);
 			
 			//orderId will be 1 more than the count of orders in the system
-			int orderId = number_of_orders.size()+1;
+			int orderId = number_of_orders+1;
 			statement.setInt(1, orderId);
 			statement.setString(2,cakeName);
 			statement.setInt(3, order.getQty());

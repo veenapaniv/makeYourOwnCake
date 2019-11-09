@@ -65,11 +65,12 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
     	try(Connection imgConnection = DriverManager.getConnection(databaseURL, user, password)){
     		String insertCakeImg = "INSERT INTO IMAGES values (?,?)";
     		
-    		String getImageCountSql = "select * from Images";
-			List<Map<String,Object>> number_of_images= getJdbcTemplate().queryForList(getImageCountSql);
+    		String getImageCountSql = "select max(ImgId) from Images";
+			int number_of_images= getJdbcTemplate().queryForObject(
+					getImageCountSql, new Object[]{}, int.class);
 			
 			//userId will be 1 more than the count of users in the system
-			imgId = number_of_images.size()+1;
+			imgId = number_of_images+1;
 			
 			PreparedStatement statement = imgConnection.prepareStatement(insertCakeImg);
 			statement.setInt(1, imgId);
@@ -86,11 +87,12 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
 			String insertCake = "INSERT INTO cake values (?,?, ?, ?, ?, ?)";
 			PreparedStatement statement = connection.prepareStatement(insertCake);
-			String getCakeCountSql = "select * from Cake";
-			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getCakeCountSql);
+			String getCakeCountSql = "select max(cid) from Cake";
+			int number_of_orders= getJdbcTemplate().queryForObject(
+					getCakeCountSql, new Object[]{}, int.class);
 			
 			//orderId will be 1 more than the count of orders in the system
-			int cakeId = number_of_orders.size()+1;
+			int cakeId = number_of_orders+1;
 			//int userId = 
 			statement.setInt(1, cakeId);
 			
