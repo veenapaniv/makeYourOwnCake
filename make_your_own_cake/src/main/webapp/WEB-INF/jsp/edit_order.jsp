@@ -52,10 +52,7 @@
                   </div>
                   <div class="form-group">
                      <label for="cakeName">Select the CakeName:</label>
-                     <%-- <input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>"> --%>
 					<c:forEach var="cakes" items="${cakes}">
-					<c:out value="0"/>test
-					<c:out value="${cakes.cakeName }"/>
 						<input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
 					</c:forEach>
                   </div>  
@@ -83,6 +80,5 @@
                      <button id="place-order" name="place-order" class="btn btn-primary">Order</button> 
                   </div>
            </form>
-           
 </body>
 </html>

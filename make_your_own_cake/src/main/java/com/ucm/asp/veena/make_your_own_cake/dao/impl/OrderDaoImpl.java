@@ -149,15 +149,21 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	public void insertOrder(Order order) {
 
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?)";
+			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
 			String getOrderCountSql = "select * from Orders";
 			List<Map<String,Object>> number_of_orders= getJdbcTemplate().queryForList(getOrderCountSql);
 			
+			String cakeNameQuery = "select cakename from Cake where cid = ?";
+			String cakeName = getJdbcTemplate().queryForObject(cakeNameQuery, new Object[] { order.getCakeId() }, String.class);
+			
+			String query = "select imgId from Cake where cid = ?";
+			int imgId = getJdbcTemplate().queryForObject(query, new Object[] { order.getCakeId() }, int.class);
+			
 			//orderId will be 1 more than the count of orders in the system
 			int orderId = number_of_orders.size()+1;
 			statement.setInt(1, orderId);
-			statement.setString(2,order.getCakeName());
+			statement.setString(2,cakeName);
 			statement.setInt(3, order.getQty());
 			statement.setString(4,order.getUsername());
 			statement.setString(5,order.getShippingAddress());
@@ -167,6 +173,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			statement.setString(8, order.getCakeId());
 			statement.setFloat(9, order.getAmount());
 			statement.setString(10, order.getOrder_status());
+			statement.setInt(11, imgId);
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
@@ -193,9 +200,11 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 
 	@Override
 	public Blob getPhotoById(int id) {
-		String query = "select image from cake where cid=?";
+		String query = "select imgId from Cake where cid = ?";
+		int imgId = getJdbcTemplate().queryForObject(query, new Object[] { id }, int.class);		
+		String getImgQuery = "select Image from Images where imgId=?";
 
-		Blob photo = getJdbcTemplate().queryForObject(query, new Object[] { id }, Blob.class);
+		Blob photo = getJdbcTemplate().queryForObject(getImgQuery, new Object[] { imgId }, Blob.class);
 
 		return photo;
 	}
@@ -222,6 +231,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			order.setCakeName((String)row.get("cname"));
 			orderList.add(order);
 		}
+		
 		return orderList;
 	}
 	

@@ -13,6 +13,7 @@
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
       <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="/js/order.js"></script>
 </head>
 <body>
  <div class="jumbotron text-center">
@@ -49,9 +50,16 @@
                      <label for="cakeName">Select the CakeName:</label>
                      <%-- <input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>"> --%>
 					<c:forEach var="cakes" items="${cakes}">
-						<input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
+						<input TYPE="radio" name="cakeName" class="cakeNameRadio" id="cakeNameRadio_${cakes.cakeId }" value="${cakes.cakeId}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
 					</c:forEach>
-					
+					<div class="form-group">
+					   <label for="cakeImage">cake picture:</label>
+                      <input type="file" required class="form-control" id="cakeImageFile" placeholder="Select image" name="photo" size="50">
+                 	</div>
+	                  <div class="form-group">
+	                     <label for="cakeName">cakeName:</label>
+	                      <input type="text" required class="form-control" id="cakeNameFileTextBox" placeholder="Enter cake name" name="cakeName">
+	                  </div>
                   </div>  
                   <div class="form-group">
                      <label for="quantity">Stock:</label>

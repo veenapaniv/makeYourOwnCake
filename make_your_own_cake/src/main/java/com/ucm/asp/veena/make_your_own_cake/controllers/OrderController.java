@@ -67,7 +67,7 @@ public class OrderController {
 		}
 		order = new Order();
 		order.setUsername(username);
-		order.setCakeName(cakeName);
+		order.setCakeId(cakeName);
 		order.setQty(quantity);
 		order.setShippingAddress(shipping_address);
 		order.setUserId("1");
@@ -86,7 +86,7 @@ public class OrderController {
 	 * @return
 	 */
 	@ModelAttribute
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, value="/*")
 	public String productsData(HttpServletRequest request,@ModelAttribute("products") Order order,ModelMap model) {
 		List<Order> orders = orderService.getAllOrders();
 		List<Cake> cakeList = orderService.getAllCakes();

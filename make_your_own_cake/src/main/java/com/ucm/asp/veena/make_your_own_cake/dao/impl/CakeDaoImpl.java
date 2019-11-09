@@ -60,7 +60,29 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 	}
     
     public void insertCake(Cake cake) {
+    	int imgId = 0;
 
+    	try(Connection imgConnection = DriverManager.getConnection(databaseURL, user, password)){
+    		String insertCakeImg = "INSERT INTO IMAGES values (?,?)";
+    		
+    		String getImageCountSql = "select * from Images";
+			List<Map<String,Object>> number_of_images= getJdbcTemplate().queryForList(getImageCountSql);
+			
+			//userId will be 1 more than the count of users in the system
+			imgId = number_of_images.size()+1;
+			
+			PreparedStatement statement = imgConnection.prepareStatement(insertCakeImg);
+			statement.setInt(1, imgId);
+			InputStream imageStream = cake.getImageStream();
+			if (imageStream != null) {
+				// fetches input stream of the upload file for the blob column
+				statement.setBlob(2, imageStream);
+			}
+			statement.executeUpdate();
+    		
+    	}catch(SQLException ex) {
+    		ex.printStackTrace();
+    	}
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
 			String insertCake = "INSERT INTO cake values (?,?, ?, ?, ?, ?)";
 			PreparedStatement statement = connection.prepareStatement(insertCake);
@@ -72,16 +94,16 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 			//int userId = 
 			statement.setInt(1, cakeId);
 			
-			InputStream imageStream = cake.getImageStream();
-			if (imageStream != null) {
-				// fetches input stream of the upload file for the blob column
-				statement.setBlob(2, imageStream);
-			}
-			
-			statement.setString(3, cake.getCakeName());
-			statement.setInt(4,cake.getStock());
-			statement.setDouble(5,cake.getAmount());
-			statement.setString(6, cake.getType());
+//			InputStream imageStream = cake.getImageStream();
+//			if (imageStream != null) {
+//				// fetches input stream of the upload file for the blob column
+//				statement.setBlob(2, imageStream);
+//			}
+			statement.setString(2, cake.getCakeName());
+			statement.setInt(3,cake.getStock());
+			statement.setDouble(4,cake.getAmount());
+			statement.setString(5, cake.getType());
+			statement.setInt(6, imgId);
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
