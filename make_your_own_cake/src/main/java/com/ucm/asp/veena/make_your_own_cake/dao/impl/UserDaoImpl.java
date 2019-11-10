@@ -77,7 +77,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 			public User mapRow(ResultSet rs, int rwNumber) throws SQLException {
 				User user = new User();
 				user.setUserId(rs.getString("uid"));
-				user.setUsername(rs.getString("name"));
+				user.setUsername(rs.getString("email"));
 				user.setAddress(rs.getString("address"));
 				user.setRole(rs.getString("role"));
 				return user;
@@ -97,7 +97,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 			public User mapRow(ResultSet rs, int rwNumber) throws SQLException {
 				User user = new User();
 				user.setUserId(rs.getString("uid"));
-				user.setUsername(rs.getString("name"));
+				user.setUsername(rs.getString("email"));
 				user.setAddress(rs.getString("address"));
 				user.setRole(rs.getString("role"));
 				return user;

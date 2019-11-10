@@ -1,11 +1,13 @@
 package com.ucm.asp.veena.make_your_own_cake.controllers;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ucm.asp.veena.make_your_own_cake.dao.OrderDao;
@@ -53,27 +56,39 @@ public class OrderController {
 	
 	@RequestMapping(value="addProduct",method=RequestMethod.POST)
 	@ResponseBody
-	public void insertCake(HttpServletRequest request,@RequestParam String username,@RequestParam String cakeName,@RequestParam int quantity, @RequestParam String shipping_address, @RequestParam String message,
-			@RequestParam float amount) {
+	public void insertProduct(HttpServletRequest request,@RequestParam(name = "customPhoto", required = false) MultipartFile customPhoto,@RequestParam String username,@RequestParam(name = "cakeName", required = false) String cakeName,@RequestParam int quantity, @RequestParam String shipping_address, @RequestParam String message,
+			@RequestParam float amount) throws IOException {
 		String userId = "";
+		String email = "";
 		Cookie[] cookies = request.getCookies();
 		if(cookies != null) {
 			for(Cookie c : cookies) {
-				if(c.getName().equals("userCookie")) {
+				if(c.getName().equals("userId")) {
 					userId = c.getValue();					
 				}
-				
+				if(c.getName().equals("username")) {
+					email = c.getValue();					
+				}
 			}
 		}
+		InputStream imageStream = null; // input stream of the upload file
+        
+        // obtains the upload file part in this multipart request
+        if (customPhoto != null) {
+            // obtains input stream of the upload file
+            imageStream = customPhoto.getInputStream();
+            
+        }
 		order = new Order();
 		order.setUsername(username);
 		order.setCakeId(cakeName);
 		order.setQty(quantity);
 		order.setShippingAddress(shipping_address);
-		order.setUserId("1");
+		order.setUserId(userId);
 		order.setMessage(message);
 		order.setAmount(amount);
 		order.setOrder_status("NEW");
+		order.setCustomImage(imageStream);
 		orderService.insertOrder(order);
 		
 	}
@@ -88,12 +103,27 @@ public class OrderController {
 	@ModelAttribute
 	@RequestMapping(method = RequestMethod.GET, value="/*")
 	public String productsData(HttpServletRequest request,@ModelAttribute("products") Order order,ModelMap model) {
+		String userId = "";
+		String email = "";
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null) {
+			for(Cookie c : cookies) {
+				if(c.getName().equals("userId")) {
+					userId = c.getValue();					
+				}
+				if(c.getName().equals("username")) {
+					email = c.getValue();					
+				}
+			}
+		}
+		List<Order> userOrders = orderService.getUserOrders(userId);
 		List<Order> orders = orderService.getAllOrders();
 		List<Cake> cakeList = orderService.getAllCakes();
 		List<Order> popularUsers = orderService.getPopularCustomers();
 		List<Order> popularCakes = orderService.getPopularCakes();
 		model.addAttribute("cakes",cakeList);
 		model.addAttribute("orders", orders);
+		model.addAttribute("userOrders", userOrders);
 		model.addAttribute("popularUsers",popularUsers);
 		model.addAttribute("popularCakes", popularCakes);
 		

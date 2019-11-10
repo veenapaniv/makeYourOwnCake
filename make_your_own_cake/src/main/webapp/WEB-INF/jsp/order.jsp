@@ -40,8 +40,27 @@
     </div>
   </div>
 </nav>
+	<%-- <%
+         Cookie cookie = null;
+         Cookie[] cookies = null;
+         
+         // Get an array of Cookies associated with the this domain
+         cookies = request.getCookies();
+         
+         if( cookies != null ) {
+            out.println("<h2> Found Cookies Name and Value</h2>");
+            
+            for (int i = 0; i < cookies.length; i++) {
+               cookie = cookies[i];
+               out.print("Name : " + cookie.getName( ) + ",  ");
+               out.print("Value: " + cookie.getValue( )+" <br/>");
+            }
+         } else {
+            out.println("<h2>No cookies founds</h2>");
+         }
+      %> --%>
 
-	 		<form action="/addProduct" class="modal-content animate" style="padding-left:150px; padding-right:150px; padding-top:100px; padding-bottom:100px" method="POST">
+	 		<form action="/addProduct" class="modal-content animate" style="padding-left:150px; padding-right:150px; padding-top:100px; padding-bottom:100px" method="POST" enctype="multipart/form-data">
                   <div class="form-group">
                      <label for="username">Username:</label>
                       <input type="text" required class="form-control" id="username" placeholder="Enter your name" name="username" value="${cakeId}">
@@ -53,13 +72,13 @@
 						<input TYPE="radio" name="cakeName" class="cakeNameRadio" id="cakeNameRadio_${cakes.cakeId }" value="${cakes.cakeId}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
 					</c:forEach>
 					<div class="form-group">
-					   <label for="cakeImage">cake picture:</label>
-                      <input type="file" required class="form-control" id="cakeImageFile" placeholder="Select image" name="photo" size="50">
+					   <label for="cakeImageFile">cake picture:</label>
+                      <input type="file" required class="form-control" id="cakeImageFile" placeholder="Select image" name="customPhoto" size="50">
                  	</div>
-	                  <div class="form-group">
+	                 <!--  <div class="form-group">
 	                     <label for="cakeName">cakeName:</label>
 	                      <input type="text" required class="form-control" id="cakeNameFileTextBox" placeholder="Enter cake name" name="cakeName">
-	                  </div>
+	                  </div> -->
                   </div>  
                   <div class="form-group">
                      <label for="quantity">Stock:</label>

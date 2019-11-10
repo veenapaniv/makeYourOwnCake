@@ -51,7 +51,7 @@ public class LoginController {
 		else if(service.validateCredentials(email, pwd).contains("user"))
 		{
 			CookieUtil userCookie = new CookieUtil("userId",userService.getUserByEmail(email).getUserId());
-			CookieUtil usernameCookie = new CookieUtil("username",userService.getUserByEmail(email).getUserId());
+			CookieUtil usernameCookie = new CookieUtil("username",userService.getUserByEmail(email).getUsername());
 			response.addCookie(userCookie);
 			response.addCookie(usernameCookie);
 			return "dashboard";

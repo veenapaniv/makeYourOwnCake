@@ -1,6 +1,7 @@
 package com.ucm.asp.veena.make_your_own_cake.model;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.util.List;
 
@@ -14,11 +15,17 @@ public class Order {
 	private float amount;
 	private String userId;
 	private File uploadedFile;
-	private String image;
 	private String message;
 	private String cakeId;
 	private String order_status;
+	private InputStream customImage;
 	
+	public InputStream getCustomImage() {
+		return customImage;
+	}
+	public void setCustomImage(InputStream customImage) {
+		this.customImage = customImage;
+	}
 	public String getOrder_status() {
 		return order_status;
 	}
@@ -66,12 +73,6 @@ public class Order {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-	public String getImage() {
-		return image;
-	}
-	public void setImage(String image) {
-		this.image = image;
 	}
 	public String getMessage() {
 		return message;

@@ -16,4 +16,5 @@ public interface OrderService {
 	public void deleteOrder(String id);
 	public List<Order> getPopularCakes();
 	public List<Order> getPopularCustomers();
+	public List<Order> getUserOrders(String userId);
 }

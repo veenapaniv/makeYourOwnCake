@@ -33,6 +33,11 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getAllOrders() {
 		return orderDao.getAllOrders();
 	}
+	
+	@Override
+	public List<Order> getUserOrders(String userId) {
+		return orderDao.getUserOrders(userId);
+	}
 
 	@Override
 	public void insertOrder(Order order) {

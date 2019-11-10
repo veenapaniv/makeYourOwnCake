@@ -63,7 +63,35 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	
 	@Override
 	public List<Order> getAllOrders() {
+		
 		String getCakesQuery = "SELECT * FROM Orders";
+		
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
+		List<Order> orderList = new ArrayList<Order>();
+		
+		for(Map<String, Object> row:rows) {
+			Order orders = new Order();
+			orders.setOrderId((String)row.get("OID"));
+			orders.setCakeId((String)row.get("CID"));
+			orders.setCakeName((String)row.get("CNAME"));
+			orders.setQty((int)row.get("QTY"));
+			orders.setUsername((String)row.get("USERNAME"));
+			orders.setShippingAddress((String) row.get("S_ADDRESS"));
+			orders.setMessage((String) row.get("MSG"));
+			orders.setOrder_status((String)row.get("ORDER_STATUS"));
+			orders.setAmount((float)row.get("amount"));
+			orders.setUserId((String)row.get("UID"));
+			orderList.add(orders);
+			
+		}
+		
+		return orderList;
+	}
+	
+	@Override
+	public List<Order> getUserOrders(String userId) {
+		
+		String getCakesQuery = "SELECT * FROM Orders where uid = "+userId;
 		
 		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
 		List<Order> orderList = new ArrayList<Order>();
@@ -156,15 +184,42 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 					getOrderCountSql, new Object[]{}, int.class);
 			
 			String cakeNameQuery = "select cakename from Cake where cid = ?";
-			String cakeName = getJdbcTemplate().queryForObject(cakeNameQuery, new Object[] { order.getCakeId() }, String.class);
-			
-			String query = "select imgId from Cake where cid = ?";
-			int imgId = getJdbcTemplate().queryForObject(query, new Object[] { order.getCakeId() }, int.class);
+			String cakeName;
+			String query;
+			String imgId;
+			if(order.getCakeId() != null) {
+				 cakeName = getJdbcTemplate().queryForObject(cakeNameQuery, new Object[] { order.getCakeId() }, String.class);
+				 query = "select imgId from Cake where cid = ?";
+				 imgId = getJdbcTemplate().queryForObject(query, new Object[] { order.getCakeId() }, String.class);
+				 statement.setString(2,cakeName);
+			}
+			else {
+				String getMaxImgId = "Select max(imgId) from Images";
+				String maxImgId = getJdbcTemplate().queryForObject(getMaxImgId, new Object[] {}, String.class);
+				maxImgId = maxImgId.substring(0, maxImgId.length()-1);
+				int maxImgIdint = Integer.parseInt(maxImgId) + 1;
+				
+				imgId = maxImgIdint+  "C";
+				statement.setString(2,"customCake");
+				try(Connection imgConnection = DriverManager.getConnection(databaseURL, user, password)){
+					String insertCakeImg = "INSERT INTO IMAGES values (?,?)";
+					PreparedStatement imgInsertstatement = imgConnection.prepareStatement(insertCakeImg);
+					imgInsertstatement.setString(1, imgId);
+					InputStream imageStream = order.getCustomImage();
+					if (imageStream != null) {
+						// fetches input stream of the upload file for the blob column
+						imgInsertstatement.setBlob(2, imageStream);
+					}
+					imgInsertstatement.executeUpdate();
+				}catch (SQLException e) {
+					
+				}	
+				
+			}
 			
 			//orderId will be 1 more than the count of orders in the system
 			int orderId = number_of_orders+1;
 			statement.setInt(1, orderId);
-			statement.setString(2,cakeName);
 			statement.setInt(3, order.getQty());
 			statement.setString(4,order.getUsername());
 			statement.setString(5,order.getShippingAddress());
@@ -174,7 +229,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			statement.setString(8, order.getCakeId());
 			statement.setFloat(9, order.getAmount());
 			statement.setString(10, order.getOrder_status());
-			statement.setInt(11, imgId);
+			statement.setString(11, imgId);
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();

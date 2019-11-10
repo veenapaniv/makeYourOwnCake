@@ -60,20 +60,21 @@
 				               </thead>
 			               <tbody id="top_products" >
 			               		
-			               			<c:forEach var="orders" items="${orders}">
+			               			<c:forEach var="userOrders" items="${userOrders}">
 				               			<tr>
-						               		<td class="prodAmt row"><c:out value="${orders.cakeName}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.qty}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.shippingAddress}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.message}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
-						               		<td class="prodAmt row"><c:out value="${orders.amount}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.cakeName}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.qty}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.shippingAddress}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.message}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.username}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.amount}"/></td>
+						               		<td class="prodAmt row"><c:out value="${userOrders.order_status}"/></td>
 						               		<td class="prodAmt row">
 						                        <c:url var="editUrl" value="/editInventory" />
-						                        <a href="${editUrl}?id=${orders.orderId}">Edit</a></td>
+						                        <a href="${editUrl}?id=${userOrders.orderId}">Edit</a></td>
 						                        <td class="prodAmt row">
 						                        <c:url var="deleteUrl" value="/deleteOrder" />
-						                        <a href="${deleteUrl}?id=${orders.orderId}"><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Delete</button></a>
+						                        <a href="${deleteUrl}?id=${userOrders.orderId}"><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Delete</button></a>
 						                        </td>
 						                    
 				               			</tr>
