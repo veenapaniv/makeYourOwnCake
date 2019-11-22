@@ -11,9 +11,10 @@ public interface OrderService {
 	public String getCakeID(String cakeName);
 	public List<Order> getAllOrders();
 	public void insertOrder(Order order);
-	public Order getOrderById(String id);
+	public Order getOrderById(int id);
 	public void updateOrder(Order order);
 	public void deleteOrder(String id);
+	public void deleteProduct(String id);
 	public List<Order> getPopularCakes();
 	public List<Order> getPopularCustomers();
 	public List<Order> getUserOrders(String userId);

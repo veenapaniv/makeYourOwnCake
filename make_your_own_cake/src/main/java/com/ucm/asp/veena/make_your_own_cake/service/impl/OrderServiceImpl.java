@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
 		
 	}
 	
-	public Order getOrderById(String id) {
+	public Order getOrderById(int id) {
 		return orderDao.getOrderById(id);
 	}
 	
@@ -55,6 +55,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void deleteOrder(String productId) {
 		orderDao.deleteOrder(productId);
+		
+	}
+	
+	@Override
+	public void deleteProduct(String productId) {
+		orderDao.deleteProduct(productId);
 		
 	}
 

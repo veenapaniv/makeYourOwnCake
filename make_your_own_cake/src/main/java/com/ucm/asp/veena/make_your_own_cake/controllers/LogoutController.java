@@ -21,6 +21,10 @@ public class LogoutController {
 					String userId = c.getValue();
 					c.setMaxAge(0);
 				}
+				if(c.getName().equals("username")) {
+					String username = c.getValue();
+					c.setMaxAge(0);
+				}
 			}
 		}
 		//redirect to login page

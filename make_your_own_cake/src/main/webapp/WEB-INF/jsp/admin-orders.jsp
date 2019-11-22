@@ -30,7 +30,11 @@
 		    </div>
 		    <div class="collapse navbar-collapse" id="myNavbar">
 		      <ul class="nav navbar-nav">
-		        <li><a href="/admin-view-orders">View Orders</a></li>
+		         <li class=""><a href="/admin-view-orders">View Placed Orders</a></li>
+		        <li class=""><a href="/products">View Inventory</a></li>
+		          <li><a href="/popular">Popular Users</a></li>
+		         <li><a href="/purchases">Popular Cakes</a></li>
+		         <li class="navbar-right"><a href="/sign_out_action">Logout</a></li>
 	
 		      </ul>
 		    </div>
@@ -39,7 +43,7 @@
       
 	 		<form action="/addCake" class="modal-content animate" style="padding-left:150px; padding-right:150px; padding-top:100px; padding-bottom:100px" method="POST" enctype="multipart/form-data">
 	 		
-	 		<div class="form-group">
+	 			  <div class="form-group">
                      <label for="cakeImage">cake picture:</label>
                       <input type="file" required class="form-control" id="cakeImage" placeholder="Select image" name="photo" size="50">
                   </div>

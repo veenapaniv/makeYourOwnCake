@@ -24,12 +24,13 @@
     <li><a data-toggle="tab" href="#menu1">View your Orders</a></li>
     <li><a data-toggle="tab" href="#menu2">Popular Cakes</a></li>
     <li><a data-toggle="tab" href="#menu3">Most purchases</a></li>
+    <li class="navbar-right"><a href="/sign_out_action">Logout</a></li>
   </ul>
 
   <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
     <ul class="nav nav-pills nav-justified">
-	 <li><a href="/admin-orders">Click here</a></li>
+	 <li><a href="/products">Click here</a></li>
    
   </ul>
       <p>Check and monitor all the orders that is been placed.</p>

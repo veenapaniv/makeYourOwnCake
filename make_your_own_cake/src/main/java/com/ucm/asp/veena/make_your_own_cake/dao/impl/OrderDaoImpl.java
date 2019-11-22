@@ -71,7 +71,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		
 		for(Map<String, Object> row:rows) {
 			Order orders = new Order();
-			orders.setOrderId((String)row.get("OID"));
+			orders.setOrderId((int)row.get("OID"));
 			orders.setCakeId((String)row.get("CID"));
 			orders.setCakeName((String)row.get("CNAME"));
 			orders.setQty((int)row.get("QTY"));
@@ -98,7 +98,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		
 		for(Map<String, Object> row:rows) {
 			Order orders = new Order();
-			orders.setOrderId((String)row.get("OID"));
+			orders.setOrderId((int)row.get("OID"));
 			orders.setCakeId((String)row.get("CID"));
 			orders.setCakeName((String)row.get("CNAME"));
 			orders.setQty((int)row.get("QTY"));
@@ -119,7 +119,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	 * Returns a user object by ID
 	 */
 	@Override
-	public Order getOrderById(String id) {
+	public Order getOrderById(int id) {
 		String getCakesQuery = "SELECT * FROM Orders WHERE oid = "+id;
 		
 		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
@@ -134,6 +134,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 				order.setMessage((String)row.get("msg"));
 				order.setUserId((String)row.get("uid"));
 				order.setCakeId((String)row.get("cid"));
+				order.setOrder_status((String)row.get("order_status"));
 				order.setAmount((float)row.get("amount"));
 				
 			}
@@ -175,32 +176,39 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	}
 	
 	public void insertOrder(Order order) {
+		Boolean customCake = false;
 
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertInventory = "INSERT INTO orders values (?,?, ?, ?, ?, ?, ?,?,?,?,?)";
+			String insertInventory = "INSERT INTO orders values (?, ?, ?, ?, ?, ?,?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
-			String getOrderCountSql = "select max(oid) from Orders";
-			int number_of_orders= getJdbcTemplate().queryForObject(
-					getOrderCountSql, new Object[]{}, int.class);
+			//String getOrderCountSql = "select max(oid) from Orders";
+			int number_of_orders= createOrderId() ;
+//					getJdbcTemplate().queryForObject(
+//					getOrderCountSql, new Object[]{}, int.class);
 			
 			String cakeNameQuery = "select cakename from Cake where cid = ?";
 			String cakeName;
 			String query;
 			String imgId;
+			float amount = 0;
+			
 			if(order.getCakeId() != null) {
 				 cakeName = getJdbcTemplate().queryForObject(cakeNameQuery, new Object[] { order.getCakeId() }, String.class);
 				 query = "select imgId from Cake where cid = ?";
 				 imgId = getJdbcTemplate().queryForObject(query, new Object[] { order.getCakeId() }, String.class);
-				 statement.setString(2,cakeName);
+				 statement.setString(1,cakeName);
+				 String getCakeAmount = "select amount from cake where cid = ? ";
+				amount = getJdbcTemplate().queryForObject(getCakeAmount, new Object[] { order.getCakeId() }, float.class);
 			}
 			else {
+				customCake = true;
 				String getMaxImgId = "Select max(imgId) from Images";
 				String maxImgId = getJdbcTemplate().queryForObject(getMaxImgId, new Object[] {}, String.class);
 				maxImgId = maxImgId.substring(0, maxImgId.length()-1);
 				int maxImgIdint = Integer.parseInt(maxImgId) + 1;
 				
 				imgId = maxImgIdint+  "C";
-				statement.setString(2,"customCake");
+				statement.setString(1,"customCake");
 				try(Connection imgConnection = DriverManager.getConnection(databaseURL, user, password)){
 					String insertCakeImg = "INSERT INTO IMAGES values (?,?)";
 					PreparedStatement imgInsertstatement = imgConnection.prepareStatement(insertCakeImg);
@@ -218,36 +226,71 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			}
 			
 			//orderId will be 1 more than the count of orders in the system
-			int orderId = number_of_orders+1;
-			statement.setInt(1, orderId);
-			statement.setInt(3, order.getQty());
-			statement.setString(4,order.getUsername());
-			statement.setString(5,order.getShippingAddress());
-			statement.setString(6, order.getMessage());
-			System.out.println("userID is"+order.getUserId());
-			statement.setString(7, order.getUserId());
-			statement.setString(8, order.getCakeId());
-			statement.setFloat(9, order.getAmount());
-			statement.setString(10, order.getOrder_status());
-			statement.setString(11, imgId);
+			//int orderId = number_of_orders;
+			//statement.setInt(1, orderId);
+			statement.setInt(2, order.getQty());
+			statement.setString(3,order.getUsername());
+			statement.setString(4,order.getShippingAddress());
+			statement.setString(5, order.getMessage());
+			statement.setString(6, order.getUserId());
+			statement.setString(7, order.getCakeId());
+			statement.setFloat(8, order.getAmount());
+			if(customCake)
+				statement.setFloat(8, 100);
+			else
+				statement.setFloat(8, amount);
+			
+			statement.setString(9, order.getOrder_status());
+			statement.setString(10, imgId);
+			statement.setInt(11, number_of_orders);
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
         }  
 	}
 	
+
+	public int createOrderId() {
+		int id= (int) Math.round((Math.random()) *100000);
+		while(!validProductId(id)) {
+			id= (int) Math.round((Math.random()) *100000);
+		}
+		return id;
+	}
+	
+	public boolean validProductId(int oid) {
+		String productQuery = "Select oid from orders where oid="+oid;
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(productQuery);
+		if(rows.size() > 0) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+
+
 	@Override
 	public void updateOrder(Order order) {
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
 			String updateInventory = "update orders " +
-					"set cname = ?, qty = ?, username = ?, s_address = ?, msg =?, amount = ? where OID = "+order.getOrderId();
+					"set cname = ?, qty = ?, imgId=?, username = ?, s_address = ?, msg =?, amount = ?, order_status = ?, cid = ? where OID = "+order.getOrderId();
 			PreparedStatement statement = connection.prepareStatement(updateInventory);
-            statement.setString(1, order.getCakeName());
+			String cakeNameQuery = "select cakeName from Cake where cid = ?";
+			String cname = getJdbcTemplate().queryForObject(cakeNameQuery, new Object[] { order.getCakeId() }, String.class);
+            statement.setString(1, cname);
             statement.setInt(2, order.getQty());
-            statement.setString(3, order.getUsername());
-            statement.setString(4, order.getShippingAddress());
-            statement.setString(5, order.getMessage());
-            statement.setFloat(6, order.getAmount());
+            String query = "select imgId from Cake where cid = ?";
+			String imgId = getJdbcTemplate().queryForObject(query, new Object[] { order.getCakeId() }, String.class);
+			float amount;
+			String getCakeAmount = "select amount from cake where cid = ? ";
+			amount = getJdbcTemplate().queryForObject(getCakeAmount, new Object[] { order.getCakeId() }, float.class);
+			statement.setString(3, imgId);
+			statement.setString(4, order.getUsername());
+            statement.setString(5, order.getShippingAddress());
+            statement.setString(6, order.getMessage());
+            statement.setFloat(7, amount);
+            statement.setString(8,  order.getOrder_status());
+            statement.setString(9, order.getCakeId());
             statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
@@ -266,6 +309,17 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 	}
 	
 	@Override
+	public Blob getPhotoByOrderId(int id) {
+		String query = "select imgId from Orders where oid = ?";
+		String imgId = getJdbcTemplate().queryForObject(query, new Object[] { id }, String.class);		
+		String getImgQuery = "select Image from Images where imgId=?";
+
+		Blob photo = getJdbcTemplate().queryForObject(getImgQuery, new Object[] { imgId }, Blob.class);
+
+		return photo;
+	}
+	
+	@Override
 	public void deleteOrder(String id) {
 		String deleteProduct = "delete from Orders where oid = ?";
 		getJdbcTemplate().update(deleteProduct, new Object[]{
@@ -274,6 +328,14 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		
 	}
 	
+	@Override
+	public void deleteProduct(String id) {
+		String deleteProduct = "delete from Cake where cid = ?";
+		getJdbcTemplate().update(deleteProduct, new Object[]{
+				id
+		});
+		
+	}
 	@Override
 	public List<Order> getPopularCakes() {
 		String popularCakes = "SELECT cname, cid, count(cid) as orderedQty \n" + 

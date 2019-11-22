@@ -30,7 +30,11 @@
 		    </div>
 		    <div class="collapse navbar-collapse" id="myNavbar">
 		      <ul class="nav navbar-nav">
-		        <li><a href="/admin-dashboard">Homepage</a></li>
+		        <li class=""><a href="/admin-view-orders">View Placed Orders</a></li>
+		        <li class=""><a href="/products">View Inventory</a></li>
+		          <li><a href="/popular">Popular Users</a></li>
+		         <li><a href="/purchases">Popular Cakes</a></li>
+		         <li class="navbar-right"><a href="/sign_out_action">Logout</a></li>
 		      </ul>
 		    </div>
 		  </div>
@@ -50,12 +54,13 @@
 			                     <th scope="col">Message</th>
 			                     <th scope="col">Username</th>
 			                     <th scope="col">Amount</th>
+			                     <th scope="col">Order Status</th>
 			                     <th scope="col">Edit</th>
-			                     <th scope="col">Delete</th>
+			                     <th scope="col">Reject</th>
 			                  </tr>
 			               </thead>
 			               <tbody id="top_products" >
-			               		<c:out value="${fn:length(orders)}"/>
+			               		<p>No of Orders : </p><c:out value="${fn:length(orders)}"/>
 			               		
 			               			<c:forEach var="orders" items="${orders}">
 				               			<tr>
@@ -65,6 +70,14 @@
 						               		<td class="prodAmt row"><c:out value="${orders.message}"/></td>
 						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
 						               		<td class="prodAmt row"><c:out value="${orders.amount}"/></td>
+						               		<td class="prodAmt row"><c:out value="${orders.order_status}"/></td>
+						               		<td class="prodAmt row">
+						                        <c:url var="editUrl" value="/editAdminInventory" />
+						                        <a href="${editUrl}?id=${orders.orderId}">Edit</a></td>
+						                        <td class="prodAmt row">
+						                        <c:url var="deleteUrl" value="/reject_order" />
+						                        <a href="${deleteUrl}?id=${orders.orderId}"><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">Reject</button></a>
+						                        </td>
 				               			</tr>
 			               			</c:forEach>
 			               </tbody>

@@ -10,7 +10,7 @@ public class Cake {
 	}
 	private String cakeName;
 	  private int stock;
-	  private double amount;
+	  private float amount;
 	  private String type;
 	  private InputStream imageStream;
 
@@ -35,10 +35,10 @@ public class Cake {
 	public void setStock(int stock) {
 		this.stock = stock;
 	}
-	public double getAmount() {
+	public float getAmount() {
 		return amount;
 	}
-	public void setAmount(double amount) {
+	public void setAmount(float amount) {
 		this.amount = amount;
 	}
 	public String getType() {

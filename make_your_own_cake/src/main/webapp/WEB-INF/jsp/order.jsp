@@ -34,31 +34,14 @@
       <ul class="nav navbar-nav">
         <li class="active"><a href="/order">Place Order</a></li>
         <li><a href="/orders">View Orders</a></li>
+        <li class="navbar-right"><a href="/sign_out_action">Logout</a></li>
 <!--         <li><a href="/popular">Top Purchases</a></li>
          <li><a href="/purchases">Top Purchaser</a></li> -->
       </ul>
     </div>
   </div>
 </nav>
-	<%-- <%
-         Cookie cookie = null;
-         Cookie[] cookies = null;
-         
-         // Get an array of Cookies associated with the this domain
-         cookies = request.getCookies();
-         
-         if( cookies != null ) {
-            out.println("<h2> Found Cookies Name and Value</h2>");
-            
-            for (int i = 0; i < cookies.length; i++) {
-               cookie = cookies[i];
-               out.print("Name : " + cookie.getName( ) + ",  ");
-               out.print("Value: " + cookie.getValue( )+" <br/>");
-            }
-         } else {
-            out.println("<h2>No cookies founds</h2>");
-         }
-      %> --%>
+
 
 	 		<form action="/addProduct" class="modal-content animate" style="padding-left:150px; padding-right:150px; padding-top:100px; padding-bottom:100px" method="POST" enctype="multipart/form-data">
                   <div class="form-group">
@@ -68,29 +51,31 @@
                     <div class="form-group">
                      <label for="cakeName">Select the CakeName:</label>
                      <%-- <input TYPE="radio" name="cakeName" value="${cakes.cakeName}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>"> --%>
-					<c:forEach var="cakes" items="${cakes}">
-						<input TYPE="radio" name="cakeName" class="cakeNameRadio" id="cakeNameRadio_${cakes.cakeId }" value="${cakes.cakeId}"/>${cakes.cakeName}<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
-					</c:forEach>
-					<div class="form-group">
+					
+						
+						<div class="container">
+						  <div class="row text-center">
+						   <c:forEach var="cakes" items="${cakes}">
+						    	<div class="col-xs-2">
+								      <figure>
+								        <input TYPE="radio" name="cakeId" class="cakeNameRadio" id="cakeNameRadio_${cakes.cakeId }" value="${cakes.cakeId}"/>
+										<img width="100" height="100" src="getCakePhoto/<c:out value='${cakes.cakeId}'/>">
+								        <input type="text" name="cakeName" readonly="readonly" value='${cakes.cakeName}'/>
+								        <input type="text" name="amount" readonly="readonly" value='${cakes.amount}'/>
+								      </figure>
+						 			</div>	
+						 		 </c:forEach>    
+						 	</div>
+						 </div>
+				
+				  <div class="form-group">
 					   <label for="cakeImageFile">cake picture:</label>
                       <input type="file" required class="form-control" id="cakeImageFile" placeholder="Select image" name="customPhoto" size="50">
-                 	</div>
-	                 <!--  <div class="form-group">
-	                     <label for="cakeName">cakeName:</label>
-	                      <input type="text" required class="form-control" id="cakeNameFileTextBox" placeholder="Enter cake name" name="cakeName">
-	                  </div> -->
+                 </div>
                   </div>  
                   <div class="form-group">
-                     <label for="quantity">Stock:</label>
+                     <label for="quantity">Quantity:</label>
                      <input type="text" required class="form-control" id="quantity" placeholder="Enter the quantity" name="quantity">
-                  </div>
-                   <div class="form-group">
-                     <label for="amount">Amount:</label>
-                     <input type="number" required class="form-control" id="amount" placeholder="amount" name="amount">
-                  </div>
-                  <div class="form-group">
-                     <label for="type">Type:</label>
-                     <input type="text" required class="form-control" id="type" placeholder="Enter the type of Occassion" name="type">
                   </div>
                   <div class="form-group">
                      <label for="address">Address:</label>

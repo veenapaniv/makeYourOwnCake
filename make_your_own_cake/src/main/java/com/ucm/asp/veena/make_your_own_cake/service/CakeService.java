@@ -9,4 +9,6 @@ public interface CakeService {
 
 	public void insertCake(Cake cake);
 	public List<Cake> getAllCakes();
+	public Cake getCakeById(String id);
+	public void updateCake(Cake order);
 }

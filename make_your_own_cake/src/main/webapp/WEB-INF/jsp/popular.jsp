@@ -31,10 +31,11 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/popular">Top Purchases</a></li>
-        <li><a href="/admin-orders">View Orders</a></li>
-        <li><a href="/order">Place Order</a></li>
-         <li><a href="/purchases">Top Purchaser</a></li>
+         <li class=""><a href="/admin-view-orders">View Placed Orders</a></li>
+		        <li class=""><a href="/products">View Inventory</a></li>
+		         <li><a href="/popular">Popular Users</a></li>
+		         <li><a href="/purchases">Popular Cakes</a></li>
+		         <li class="navbar-right"><a href="/sign_out_action">Logout</a></li>
       </ul>
     </div>
   </div>
@@ -50,11 +51,11 @@
 			                  </tr>
 			               </thead>
 			               	<tbody id="top_products">
-			               			<c:forEach var="popularCakes" items="${popularCakes}">
+			               			<c:out value="${fn:length(popularUsers)}"></c:out>
+			               			<c:forEach var="popularUsers" items="${popularUsers}">
 			               			
 				               			<tr>
-						               		<td class="productName"><c:out value="${popularCakes.cakeName}"/></td>
-						               		 <td class="prodAmt row"><c:out value="${popularCakes.cakeId}"/></td> 
+						               		<td class="prodAmt row"><c:out value="${popularUsers.username}"/></td>
 				               			</tr>
 			               			</c:forEach>
 			               	</tbody>

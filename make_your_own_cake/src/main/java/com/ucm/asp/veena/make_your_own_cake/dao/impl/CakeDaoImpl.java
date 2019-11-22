@@ -1,6 +1,7 @@
 package com.ucm.asp.veena.make_your_own_cake.dao.impl;
 
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -52,7 +53,7 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 			cakes.setCakeId((String)row.get("CID"));
 			cakes.setCakeName((String)row.get("CAKENAME"));
 			cakes.setStock((int)row.get("STOCK"));
-			cakes.setAmount((double)row.get("AMOUNT"));
+			cakes.setAmount((float)row.get("AMOUNT"));
 			cakes.setType((String) row.get("TYPE"));
 			cakeList.add(cakes);
 		}
@@ -66,11 +67,11 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
     		String insertCakeImg = "INSERT INTO IMAGES values (?,?)";
     		
     		String getImageCountSql = "select max(ImgId) from Images";
-			int number_of_images= getJdbcTemplate().queryForObject(
-					getImageCountSql, new Object[]{}, int.class);
+    		int number_of_images = 0;
+			number_of_images= createImgId();
 			
 			//userId will be 1 more than the count of users in the system
-			imgId = number_of_images+1;
+			imgId = number_of_images;
 			
 			PreparedStatement statement = imgConnection.prepareStatement(insertCakeImg);
 			statement.setInt(1, imgId);
@@ -112,6 +113,75 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
         }  
 	}
     
+    public int createImgId() {
+		int id= (int) Math.round((Math.random()) *100000);
+		while(!validCakeId(id)) {
+			id= (int) Math.round((Math.random()) *100000);
+		}
+		return id;
+	}
+	
+	public boolean validCakeId(int oid) {
+		String productQuery = "Select oid from orders where oid="+oid;
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(productQuery);
+		if(rows.size() > 0) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+
+	public void deleteCake(String id) {
+		String deleteCake = "delete from Cake where cakeId = ?";
+		getJdbcTemplate().update(deleteCake, new Object[]{
+				id
+		});
+		
+	}
     
+	public Cake getCakeById(String id) {
+		String getCakesQuery = "SELECT * FROM Cake WHERE cid = "+id;
+		
+		String getImgIdQuery = "SELECT imgId FROM Cake where cid= ?";
+		
+		String imgId = getJdbcTemplate().queryForObject(
+				 getImgIdQuery, new Object[]{id}, String.class);
+		String getImgQuery = "Select image from Images where imgId = ?";
+		Blob currentCakeimage = getJdbcTemplate().queryForObject(
+				getImgQuery, new Object[]{imgId}, Blob.class); 
+		
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
+		Cake cake = new Cake();
+		
+		for(Map<String, Object> row:rows) {
+				cake.setCakeId(id);
+				cake.setCakeName((String)row.get("CAKENAME"));
+				cake.setStock((int)row.get("STOCK"));
+				cake.setType((String)row.get("TYPE"));
+//				try {
+//					cake.setImageStream(currentCakeimage.getBinaryStream());
+//				} catch (SQLException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+				cake.setAmount((float)row.get("AMOUNT"));
+			}
+		return cake;
+		
+	}
+	public void updateCake(Cake cake) {
+		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
+			String updateInventory = "update cake " +
+					"set cakename = ?, stock = ?,  Type =?, amount = ? where CID = "+cake.getCakeId();
+			PreparedStatement statement = connection.prepareStatement(updateInventory);
+            statement.setString(1, cake.getCakeName());
+            statement.setInt(2, cake.getStock());
+            statement.setString(3, cake.getType());
+            statement.setFloat(4, (float) cake.getAmount());
+            statement.executeUpdate();
+		}catch (SQLException ex) {
+            ex.printStackTrace();
+        }  
+	}
 
 }

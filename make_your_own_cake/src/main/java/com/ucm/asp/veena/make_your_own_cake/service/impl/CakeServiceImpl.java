@@ -28,4 +28,19 @@ public class CakeServiceImpl implements CakeService{
 		return cakeDao.getAllCakes();
 	}
 
+	public void deleteCake(String cakeId) {
+		cakeDao.deleteCake(cakeId);
+		
+	}
+	public Cake getCakeById(String id) {
+		
+		return cakeDao.getCakeById(id);
+	}
+	
+	public void updateCake(Cake cake) {
+		cakeDao.updateCake(cake);
+	}
+	
+	
+
 }

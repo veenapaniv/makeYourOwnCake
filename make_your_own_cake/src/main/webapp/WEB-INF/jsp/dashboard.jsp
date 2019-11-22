@@ -22,6 +22,7 @@
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#home">Place your Order here</a></li>
     <li><a data-toggle="tab" href="#menu1">View your Orders</a></li>
+    <li class="navbar-right"><a href="/sign_out_action">Logout</a></li>
   </ul>
 
   <div class="tab-content">
