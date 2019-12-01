@@ -12,6 +12,7 @@
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
       <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="/js/admin-order.js"></script>
 </head>
 <body>
 	 <div class="jumbotron text-center">
@@ -55,13 +56,15 @@
 			                     <th scope="col">Username</th>
 			                     <th scope="col">Amount</th>
 			                     <th scope="col">Order Status</th>
+			                     <th scope="col">View Reviews</th>
+			                     <th scope="col">Likes</th>
 			                     <th scope="col">Edit</th>
 			                     <th scope="col">Reject</th>
 			                  </tr>
 			               </thead>
 			               <tbody id="top_products" >
 			               		<p>No of Orders : </p><c:out value="${fn:length(orders)}"/>
-			               		
+			               			<c:set var="count" value="1" scope="page" />
 			               			<c:forEach var="orders" items="${orders}">
 				               			<tr>
 						               		<td class="prodAmt row"><c:out value="${orders.cakeName}"/></td>
@@ -71,6 +74,30 @@
 						               		<td class="prodAmt row"><c:out value="${orders.username}"/></td>
 						               		<td class="prodAmt row"><c:out value="${orders.amount}"/></td>
 						               		<td class="prodAmt row"><c:out value="${orders.order_status}"/></td>
+						               		 <td class="prodAmt row">
+						                        	<input type="hidden" name="reviewCakeCid" value="${orders.cakeId}"/>
+						                         	<input type="hidden" name="reviewCakeOid" value="${orders.orderId}"/>
+						                         	<input type="hidden" name="reviewCakeUid" value="${orders.userId}"/>
+						                         	<input type="hidden" name="row_count_review" value="${count }"/>
+						                         	<c:choose>
+							                         	<c:when test="${ orders.cakeName != 'customCake' }">
+										                       <a class='viewAllReviews' id='viewAllReviews_${orders.cakeId}_${count}'>view all reviews</a>
+										                       <p id="user-review_${orders.orderId}_${count}"></p>
+										                </c:when>
+									                </c:choose>       
+						                        </td>
+						                         <td class="prodAmt row">
+						                         	<input type="hidden" name="likeCakeCid" value="${orders.cakeId}"/>
+						                         	<input type="hidden" name="likeCakeOid" value="${orders.orderId}"/>
+						                         	<input type="hidden" name="likeCakeUid" value="${orders.userId}"/>
+						                         	<input type="hidden" name="row_count_likes" value="${count }"/>
+						                         	<c:choose>
+							                         	<c:when test="${ orders.cakeName != 'customCake' }">
+									                       <a href="#" class="viewCakeLikes" id="viewCakeLikes_${orders.orderId}_${count}">View Likes</a>
+									                       <p id="likes_${orders.cakeId}_${count}"></p>
+									                    </c:when>
+								                    </c:choose>   
+						                        </td>
 						               		<td class="prodAmt row">
 						                        <c:url var="editUrl" value="/editAdminInventory" />
 						                        <a href="${editUrl}?id=${orders.orderId}">Edit</a></td>
@@ -79,6 +106,7 @@
 						                        <a href="${deleteUrl}?id=${orders.orderId}"><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">Reject</button></a>
 						                        </td>
 				               			</tr>
+				               			<c:set var="count" value="${count + 1}" scope="page"/>
 			               			</c:forEach>
 			               </tbody>
 			            </table>

@@ -10,6 +10,7 @@ public interface OrderService {
 	public List<Cake> getAllCakes();
 	public String getCakeID(String cakeName);
 	public List<Order> getAllOrders();
+	public List<Order> getAdminOrders(String userId);
 	public void insertOrder(Order order);
 	public Order getOrderById(int id);
 	public void updateOrder(Order order);
@@ -18,4 +19,6 @@ public interface OrderService {
 	public List<Order> getPopularCakes();
 	public List<Order> getPopularCustomers();
 	public List<Order> getUserOrders(String userId);
+	public String getSellerId(String cid);
+	public String getSellerName(String sid);
 }

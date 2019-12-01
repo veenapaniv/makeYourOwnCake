@@ -11,8 +11,11 @@
 <title>Make Your Order</title>
  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-      <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+ <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+  <script type="text/javascript" src="/js/user-order.js"></script>
+	
 </head>
 <body>
 
@@ -56,12 +59,16 @@
 				                     <th scope="col">Message</th>
 				                     <th scope="col">Username</th>
 				                     <th scope="col">Amount</th>
+				                     <th scope="col">Order Status</th>
 				                     <th scope="col">Edit</th>
 				                     <th scope="col">Delete</th>
+				                     <th scope="col">Review</th>
+				                     <th scope="col">Like</th>
+				                     <!-- <th scope="col">Seller</th> -->
 				                  </tr>
 				               </thead>
 			               <tbody id="top_products" >
-			               		
+			               		<c:set var="count" value="1" scope="page" />
 			               			<c:forEach var="userOrders" items="${userOrders}">
 				               			<tr>
 						               		<td class="prodAmt row"><c:out value="${userOrders.cakeName}"/></td>
@@ -92,8 +99,40 @@
 							                        <c:url var="deleteUrl" value="/deleteOrder" />
 							                        <a href="${deleteUrl}?id=${userOrders.orderId}"><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Delete</button></a>
 						                        </td>
+						                        <td class="prodAmt row">
+						                        	<input type="hidden" name="reviewCakeCid" value="${userOrders.cakeId}"/>
+						                         	<input type="hidden" name="reviewCakeOid" value="${userOrders.orderId}"/>
+						                         	<input type="hidden" name="reviewCakeUid" value="${userOrders.userId}"/>
+						                         	<input type="hidden" name="count_reviews" value="${count}"/>
+						                         	<c:choose>
+							                         	<c:when test="${ userOrders.cakeName != 'customCake' }">
+										                       <p class="review" id="reviewCake_${userOrders.orderId}_${count}" > Review your order </p>
+										                       <p id="user-review_${userOrders.orderId}_${count}"></p>
+										                       <p class='viewAllReviews' id='viewAllReviews_${userOrders.cakeId}_${count}'>view all reviews</p>
+										                </c:when>
+									                </c:choose>       
+						                        </td>
+						                         <td class="prodAmt row">
+						                         	<input type="hidden" name="likeCakeCid" value="${userOrders.cakeId}"/>
+						                         	<input type="hidden" name="likeCakeOid" value="${userOrders.orderId}"/>
+						                         	<input type="hidden" name="likeCakeUid" value="${userOrders.userId}"/>
+						                         	<input type="hidden" name="count_reviews" value="${count}"/>
+						                         	<c:choose>
+							                         	<c:when test="${ userOrders.cakeName != 'customCake' }">
+									                       <i class="fas fa-thumbs-up likeCake" id="likeCake_${userOrders.orderId}_${count}"></i>
+									                       <p class="likes"></p>
+									                    </c:when>
+								                    </c:choose>   
+						                        </td>
+						                       <%--  <td class="prodAmt row">
+						                        	<input type="hidden" name="reviewCakeCid" value="${userOrders.cakeId}"/>
+						                         	<input type="hidden" name="reviewCakeOid" value="${userOrders.orderId}"/>
+						                         	<input type="hidden" name="reviewCakeUid" value="${userOrders.userId}"/>
+						                       		<a href="#" class="sellerName" id="seller_${userOrders.orderId}">View the Seller</a>
+						                        </td> --%>
 						                    
 				               			</tr>
+				               			<c:set var="count" value="${count + 1}" scope="page"/>
 			               			</c:forEach>
 			               			<%-- <c:forEach var="popularUsers" items="${popularUsers}">
 				               			<tr>

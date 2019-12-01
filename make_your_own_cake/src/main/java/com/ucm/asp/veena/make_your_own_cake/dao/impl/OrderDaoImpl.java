@@ -1,32 +1,27 @@
 package com.ucm.asp.veena.make_your_own_cake.dao.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import com.ucm.asp.veena.make_your_own_cake.dao.OrderDao;
 import com.ucm.asp.veena.make_your_own_cake.model.Cake;
 import com.ucm.asp.veena.make_your_own_cake.model.Order;
-import com.ucm.asp.veena.make_your_own_cake.model.User;
 
 @Repository
 public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
@@ -87,6 +82,36 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		
 		return orderList;
 	}
+	
+	
+	
+	@Override
+	public List<Order> getAdminOrders(String userId) {
+		
+		String getCakesQuery = "SELECT * FROM Orders where sid = "+userId+" or sid= 0";
+		
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(getCakesQuery);
+		List<Order> orderList = new ArrayList<Order>();
+		
+		for(Map<String, Object> row:rows) {
+			Order orders = new Order();
+			orders.setOrderId((int)row.get("OID"));
+			orders.setCakeId((String)row.get("CID"));
+			orders.setCakeName((String)row.get("CNAME"));
+			orders.setQty((int)row.get("QTY"));
+			orders.setUsername((String)row.get("USERNAME"));
+			orders.setShippingAddress((String) row.get("S_ADDRESS"));
+			orders.setMessage((String) row.get("MSG"));
+			orders.setOrder_status((String)row.get("ORDER_STATUS"));
+			orders.setAmount((float)row.get("amount"));
+			orders.setUserId((String)row.get("UID"));
+			orderList.add(orders);
+			
+		}
+		
+		return orderList;
+	}
+	
 	
 	@Override
 	public List<Order> getUserOrders(String userId) {
@@ -179,7 +204,7 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 		Boolean customCake = false;
 
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertInventory = "INSERT INTO orders values (?, ?, ?, ?, ?, ?,?,?,?,?,?)";
+			String insertInventory = "INSERT INTO orders values (?, ?, ?, ?, ?, ?,?,?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertInventory);
 			//String getOrderCountSql = "select max(oid) from Orders";
 			int number_of_orders= createOrderId() ;
@@ -243,6 +268,10 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			statement.setString(9, order.getOrder_status());
 			statement.setString(10, imgId);
 			statement.setInt(11, number_of_orders);
+			if(order.getCakeId() != null)
+				statement.setString(12, getSellerId(order.getCakeId()));
+			else
+				statement.setString(12, "0");
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
@@ -369,5 +398,21 @@ public class OrderDaoImpl extends JdbcDaoSupport implements OrderDao {
 			orderList.add(order);
 		}
 		return orderList;
+	}
+	
+	@Override
+	public String getSellerId(String cid) {
+		String getSid = "select sid from cake where cid = "+cid;
+		String sid = getJdbcTemplate().queryForObject(getSid, new Object[] { }, String.class);;
+		
+		return sid;
+	}
+	
+	@Override
+	public String getSellerName(String sid) {
+		String getSid = "select distinct name from users where uid = "+sid;
+		String sellerName = getJdbcTemplate().queryForObject(getSid, new Object[] { }, String.class);;
+		
+		return sellerName;
 	}
 }

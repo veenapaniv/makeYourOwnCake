@@ -13,6 +13,7 @@ public interface OrderDao {
 	public String getCakeID(String cakeName);
 	public List<Order> getAllOrders();
 	public List<Order> getUserOrders(String userId);
+	public List<Order> getAdminOrders(String userId);
 	public void insertOrder(Order order);
 	public void updateOrder(Order order);
 	public List<Order> getNewOrders();
@@ -23,5 +24,6 @@ public interface OrderDao {
 	public void deleteProduct(String id);
 	public List<Order> getPopularCakes();
 	public List<Order> getPopularUsers();
-	
+	public String getSellerId(String cid);
+	public String getSellerName(String sid);
 }

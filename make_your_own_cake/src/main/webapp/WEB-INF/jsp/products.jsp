@@ -60,7 +60,6 @@
 				            
 				                     <th scope="col">Amount</th>
 				                     <th scope="col">Edit</th>
-				                     <th scope="col">Delete</th>
 				                  </tr>
 				               </thead>
 			               <tbody id="top_products" >
@@ -77,9 +76,9 @@
 						                        <c:url var="editUrl" value="/edit_product" />
 						                        <a href="${editUrl}?id=${cakes.cakeId}">Edit</a></td>
 						                        <td class="prodAmt row">
-						                        <c:url var="deleteUrl" value="/delete_product" />
+						                      <%--   <c:url var="deleteUrl" value="/delete_product" />
 						                        <a href="${deleteUrl}?id=${cakes.cakeId}"><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">Delete</button></a>
-						                        </td>
+						                        </td> --%>
 						                    
 				               			</tr>
 			               			</c:forEach>

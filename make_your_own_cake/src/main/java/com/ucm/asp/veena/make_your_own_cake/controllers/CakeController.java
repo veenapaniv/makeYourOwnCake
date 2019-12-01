@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,21 @@ public class CakeController {
 		
 		
 		InputStream imageStream = null; // input stream of the upload file
-        
+		String userId = "";
+		String email = "";
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie c : cookies) {
+				if (c.getName().equals("userId")) {
+					userId = c.getValue();
+				}
+				if (c.getName().equals("username")) {
+					email = c.getValue();
+				}
+			}
+		}
+		
+		
         // obtains the upload file part in this multipart request
         if (photo != null) {
             // obtains input stream of the upload file
@@ -48,6 +63,7 @@ public class CakeController {
 		cake.setType(type);
 		cake.setAmount(amount);
 		cake.setImageStream(imageStream);
+		cake.setSid(userId);
 		cakeService.insertCake(cake);
 		return "redirect:/products";
 	}

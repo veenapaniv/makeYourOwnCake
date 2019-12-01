@@ -46,7 +46,7 @@
     <div id="menu2" class="tab-pane fade">
    <ul class="nav nav-pills nav-justified">
 
-     <li><a href="/popular">Click here</a></li>
+     <li><a href="/purchases">Click here</a></li>
 
   </ul>
       <p>Our daily menu features a wide variety of cakes and scratch baked confections in many traditional and modern flavors. We offer a rotation of seasonal goods, gift items, and feature a new flavor each week! Sweet delicacies and special occasion cakes for any event are available by custom order so give us a call and let us help with your celebration!</p>
@@ -54,7 +54,7 @@
     <div id="menu3" class="tab-pane fade">
 <ul class="nav nav-pills nav-justified">
 
-     <li><a href="/purchases">Click here</a></li>
+     <li><a href="/popular">Click here</a></li>
   </ul>
       <p>So whether a birthday, a dinner party, a wedding or shower, let us help you cater your next special event!</p>
     </div>

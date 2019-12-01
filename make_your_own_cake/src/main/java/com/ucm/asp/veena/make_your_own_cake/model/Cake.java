@@ -5,7 +5,15 @@ import java.sql.Blob;
 
 public class Cake {
 	  private String cakeId;
-	  public String getCakeId() {
+	  private String sid;
+
+	public String getSid() {
+		return sid;
+	}
+	public void setSid(String sid) {
+		this.sid = sid;
+	}
+	public String getCakeId() {
 		return cakeId;
 	}
 	private String cakeName;

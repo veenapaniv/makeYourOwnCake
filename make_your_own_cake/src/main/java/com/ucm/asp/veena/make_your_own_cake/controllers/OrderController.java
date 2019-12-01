@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,13 +20,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ucm.asp.veena.make_your_own_cake.dao.LikeDao;
 import com.ucm.asp.veena.make_your_own_cake.dao.OrderDao;
 import com.ucm.asp.veena.make_your_own_cake.model.Cake;
 import com.ucm.asp.veena.make_your_own_cake.model.Order;
 import com.ucm.asp.veena.make_your_own_cake.service.OrderService;
+import com.ucm.asp.veena.make_your_own_cake.service.impl.EmailSender;
 
 @Controller
 public class OrderController {
@@ -34,6 +38,12 @@ public class OrderController {
 
 	@Autowired
 	OrderDao orderDao;
+	
+	@Autowired
+	LikeDao likeDao;
+	
+	@Autowired
+	EmailSender emailSender;
 
 	Order order;
 	private String deleteId;
@@ -48,6 +58,11 @@ public class OrderController {
 		IOUtils.copy(inputStream, response.getOutputStream());
 	}
 	
+//	@RequestMapping(value = "/getSid", method = RequestMethod.GET)
+//	public void getSellerID(HttpServletResponse response, @RequestParam("cid") String cid) throws Exception {
+//		String sid = orderService.getSellerId(cid);
+//	}
+	
 	@RequestMapping(value = "/getCakePhotoByOrderId/{id}", method = RequestMethod.GET)
 	public void getCakePhotoByOrderId(HttpServletResponse response, @PathVariable("id") int id) throws Exception {
 		response.setContentType("image/jpeg");
@@ -58,7 +73,7 @@ public class OrderController {
 		IOUtils.copy(inputStream, response.getOutputStream());
 	}
 
-	@RequestMapping(value = "addProduct", method = RequestMethod.POST)
+	@RequestMapping(value = "addProduct", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public String insertProduct(HttpServletRequest request,
 			@RequestParam(name = "customPhoto", required = false) MultipartFile customPhoto,
 			@RequestParam String username, @RequestParam(name = "cakeName", required = false) String cakeName,
@@ -67,6 +82,8 @@ public class OrderController {
 			throws IOException {
 		String userId = "";
 		String email = "";
+		String subject ="";
+		String emailContent = "";
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie c : cookies) {
@@ -84,7 +101,6 @@ public class OrderController {
 		if (customPhoto != null) {
 			// obtains input stream of the upload file
 			imageStream = customPhoto.getInputStream();
-
 		}
 		order = new Order();
 		order.setUsername(username);
@@ -97,6 +113,12 @@ public class OrderController {
 		order.setOrder_status("NEW");
 		order.setCustomImage(imageStream);
 		orderService.insertOrder(order);
+		
+		subject = "Your Order has been placed!";
+		emailContent = "Thank you for Ordering with us. <br> We are excited to deliver your cake <br>" + 
+				 "Login to check the status. <br>'<a href='http://localhost:8080/login'>View Orders </a>";
+		
+		emailSender.sendEmailNotification(email, subject, emailContent);
 		
 		return "redirect:/orders";
 	}
@@ -127,7 +149,7 @@ public class OrderController {
 			}
 		}
 		List<Order> userOrders = orderService.getUserOrders(userId);
-		List<Order> orders = orderService.getAllOrders();
+		List<Order> orders = orderService.getAdminOrders(userId);
 		List<Cake> cakeList = orderService.getAllCakes();
 		List<Order> popularUsers = orderService.getPopularCustomers();
 		List<Order> popularCakes = orderService.getPopularCakes();
@@ -136,6 +158,7 @@ public class OrderController {
 		model.addAttribute("userOrders", userOrders);
 		model.addAttribute("popularUsers", popularUsers);
 		model.addAttribute("popularCakes", popularCakes);
+		//model.addAttribute("likes", likeDao.getLikes(cakeId))
 
 		return "order";
 
@@ -200,6 +223,9 @@ public class OrderController {
 			@RequestParam(name="cakeName", required=false) String cakeName, @RequestParam int quantity, @RequestParam String shipping_address,
 			@RequestParam String message, @RequestParam float amount, @RequestParam String orderStatus) {
 		Order order = new Order();
+		String subject = "";
+		String emailContent = "";
+//		EmailSender emailSender = new EmailSender();
 		order.setUsername(username);
 		order.setCakeId(cakeName);
 		order.setQty(quantity);
@@ -209,6 +235,13 @@ public class OrderController {
 		order.setOrderId(id);
 		order.setOrder_status(orderStatus);
 		orderService.updateOrder(order);
+		
+		subject = "Your Order #"+id +" status has been updated";
+		emailContent = "Thank you for Ordering with us. <br> We are excited to deliver your cake <br>" +
+		        "The staus has been moved to <b>"+ orderStatus 
+		        + "</b>. Visit the site to view further details <br>"+"<a href='http://localhost:8080/login'>View Orders </a>";;
+		emailSender.sendEmailNotification("veenapani.v@gmail.com", subject, emailContent);
+		
 		return "redirect:/admin-view-orders";
 	}
 
@@ -228,18 +261,18 @@ public class OrderController {
 	}
 	
 	// View for delete product
-		@RequestMapping("/delete_product")
-		public ModelAndView deleteProduct(@RequestParam("id") String id) {
-			deleteId = id;
-			ModelAndView model = new ModelAndView("deleteProduct");
-			return model;
-		}
+	@RequestMapping("/delete_product")
+	public ModelAndView deleteProduct(@RequestParam("id") String id) {
+		deleteId = id;
+		ModelAndView model = new ModelAndView("deleteProduct");
+		return model;
+	}
 
-		// Deleting a product in database
-		@RequestMapping(value = "/delete_product", method = RequestMethod.POST)
-		public String deleteProduct() {
-			orderService.deleteProduct(deleteId);
-			return "redirect:/products";
-		}
+	// Deleting a product in database
+	@RequestMapping(value = "/delete_product", method = RequestMethod.POST)
+	public String deleteProduct() {
+		orderService.deleteProduct(deleteId);
+		return "redirect:/products";
+	}
 
 }

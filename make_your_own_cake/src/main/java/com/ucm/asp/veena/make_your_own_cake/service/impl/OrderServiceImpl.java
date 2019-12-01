@@ -38,6 +38,11 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getUserOrders(String userId) {
 		return orderDao.getUserOrders(userId);
 	}
+	
+	@Override
+	public List<Order> getAdminOrders(String userId) {
+		return orderDao.getAdminOrders(userId);
+	}
 
 	@Override
 	public void insertOrder(Order order) {
@@ -74,5 +79,14 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getPopularCustomers() {
 		
 		return orderDao.getPopularUsers();
+	}
+	
+	@Override
+	public String getSellerId(String cid) {
+		return orderDao.getSellerId(cid);
+	}
+	@Override
+	public String getSellerName(String sid) {
+		return orderDao.getSellerName(sid);
 	}
 }

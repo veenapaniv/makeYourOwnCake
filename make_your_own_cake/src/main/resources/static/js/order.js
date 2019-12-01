@@ -10,5 +10,5 @@ $(document).ready(function(){
 			$(".cakeNameRadio").prop("disabled",false)
 		}
 		$("#cakeImageFile").prop("disabled", true);
-	})
+	});
 });

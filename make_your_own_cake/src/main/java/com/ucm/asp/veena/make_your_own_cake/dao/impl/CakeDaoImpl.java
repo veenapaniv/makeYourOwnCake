@@ -62,7 +62,7 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
     
     public void insertCake(Cake cake) {
     	int imgId = 0;
-
+    	
     	try(Connection imgConnection = DriverManager.getConnection(databaseURL, user, password)){
     		String insertCakeImg = "INSERT INTO IMAGES values (?,?)";
     		
@@ -86,7 +86,7 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
     		ex.printStackTrace();
     	}
 		try (Connection connection = DriverManager.getConnection(databaseURL, user, password)) {
-			String insertCake = "INSERT INTO cake values (?,?, ?, ?, ?, ?)";
+			String insertCake = "INSERT INTO cake values (?,?, ?, ?, ?, ?,?)";
 			PreparedStatement statement = connection.prepareStatement(insertCake);
 			String getCakeCountSql = "select max(cid) from Cake";
 			int number_of_orders= getJdbcTemplate().queryForObject(
@@ -97,16 +97,12 @@ public class CakeDaoImpl extends JdbcDaoSupport implements CakeDao{
 			//int userId = 
 			statement.setInt(1, cakeId);
 			
-//			InputStream imageStream = cake.getImageStream();
-//			if (imageStream != null) {
-//				// fetches input stream of the upload file for the blob column
-//				statement.setBlob(2, imageStream);
-//			}
 			statement.setString(2, cake.getCakeName());
 			statement.setInt(3,cake.getStock());
 			statement.setDouble(4,cake.getAmount());
 			statement.setString(5, cake.getType());
 			statement.setInt(6, imgId);
+			statement.setString(7,cake.getSid());
 			statement.executeUpdate();
 		}catch (SQLException ex) {
             ex.printStackTrace();
